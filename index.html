@@ -1,16 +1,3 @@
-<style>
-    :root {
-        --bg-primary: #060913;
-        --bg-secondary: #0f172a;
-        --card-bg: rgba(18, 24, 38, 0.75);
-        --border-color: rgba(255, 255, 255, 0.1);
-        --accent-orange: #FF5500;
-        --accent-blue: #38bdf8;
-        --text-main: #f1f5f9;
-        --text-muted: #94a3b8;
-        --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
     * {
         margin: 0;
         padding: 0;
@@ -23,45 +10,45 @@
     }
 
     body {
-        background-color: var(--bg-primary);
+        background-color: var(--bg-base);
         color: var(--text-main);
         font-family: 'Plus Jakarta Sans', sans-serif;
         overflow-x: hidden;
-        line-height: 1.6;
+        line-height: 1.5;
     }
 
-    /* Custom Kinetic Cursor */
-    .cursor-dot, .cursor-circle {
+    /* Monopo-style Custom Kinetic Cursor */
+    .cursor-core, .cursor-follower {
         position: fixed;
         top: 0;
         left: 0;
         pointer-events: none;
         border-radius: 50%;
-        z-index: 9999;
-        transition: transform 0.1s ease;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
     }
 
-    .cursor-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--accent-orange);
+    .cursor-core {
+        width: 10px;
+        height: 10px;
+        background: var(--neon-orange);
     }
 
-    .cursor-circle {
-        width: 36px;
-        height: 36px;
-        border: 1px solid rgba(255, 85, 0, 0.5);
-        background: rgba(255, 85, 0, 0.05);
-        backdrop-filter: blur(2px);
-        transition: width 0.3s, height 0.3s, background 0.3s;
+    .cursor-follower {
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(255, 51, 0, 0.4);
+        background: rgba(255, 51, 0, 0.03);
+        backdrop-filter: blur(1px);
     }
 
-    body:hover .cursor-dot, body:hover .cursor-circle {
+    body:hover .cursor-core, body:hover .cursor-follower {
         opacity: 1;
     }
 
-    /* Background WebGL-like Dynamic Canvas */
-    #bg-canvas {
+    /* Background WebGL-like Dynamic Particle Canvas */
+    #monopo-canvas {
         position: fixed;
         top: 0;
         left: 0;
@@ -71,622 +58,658 @@
         pointer-events: none;
     }
 
-    /* Navigation */
+    /* Monopo-style Header Navigation */
     header {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        z-index: 1000;
-        background: rgba(6, 9, 19, 0.8);
-        backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border-color);
+        z-index: 999;
+        background: rgba(3, 7, 18, 0.85);
+        backdrop-filter: blur(25px);
+        border-bottom: 1px solid var(--border-subtle);
     }
 
-    .nav-container {
-        max-width: 1400px;
+    .nav-wrapper {
+        max-width: 1600px;
         margin: 0 auto;
-        padding: 25px 40px;
+        padding: 30px 60px;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .logo {
+    .brand-logo {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: 700;
         color: var(--text-main);
         text-decoration: none;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
         letter-spacing: -0.5px;
     }
 
-    .logo span {
-        color: var(--accent-orange);
+    .brand-logo span {
+        color: var(--neon-orange);
     }
 
-    .nav-links {
+    .nav-menu {
         display: flex;
-        gap: 40px;
+        gap: 45px;
         list-style: none;
     }
 
-    .nav-links a {
+    .nav-menu a {
         color: var(--text-muted);
         text-decoration: none;
-        font-weight: 500;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.95rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         transition: color 0.3s ease;
         position: relative;
     }
 
-    .nav-links a:hover {
-        color: var(--accent-orange);
+    .nav-menu a:hover {
+        color: var(--neon-orange);
     }
 
-    /* Hero Section */
-    .hero {
+    /* Monopo Hero Section (Bold Split Typography) */
+    .monopo-hero {
         min-height: 100vh;
         display: flex;
         align-items: center;
-        padding: 0 40px;
-        max-width: 1400px;
+        padding: 160px 60px 80px 60px;
+        max-width: 1600px;
         margin: 0 auto;
-        position: relative;
     }
 
-    .hero-grid {
+    .hero-layout {
         display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
+        grid-template-columns: 1.3fr 0.7fr;
         gap: 60px;
         align-items: center;
         width: 100%;
-        padding-top: 80px;
     }
 
-    .hero-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(255, 85, 0, 0.1);
-        border: 1px solid rgba(255, 85, 0, 0.3);
-        padding: 8px 16px;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        color: var(--accent-orange);
-        font-weight: 600;
-        margin-bottom: 25px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .hero-title {
+    .hero-main-title {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: clamp(3.5rem, 6vw, 6.5rem);
+        font-size: clamp(4rem, 7.5vw, 8rem);
         font-weight: 800;
-        line-height: 1.05;
-        letter-spacing: -2px;
-        margin-bottom: 25px;
+        line-height: 0.95;
+        letter-spacing: -3px;
+        text-transform: uppercase;
+        margin-bottom: 30px;
     }
 
-    .hero-title span {
-        background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-orange) 100%);
+    .hero-main-title span {
+        display: block;
+        color: transparent;
+        -webkit-text-stroke: 1.5px var(--text-main);
+        transition: all 0.4s ease;
+    }
+
+    .hero-main-title span.highlight {
+        -webkit-text-stroke: 0px;
+        background: linear-gradient(135deg, var(--neon-orange), #ff8833);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
-    .hero-desc {
-        font-size: 1.2rem;
+    .hero-subtitle-box {
+        font-size: 1.25rem;
         color: var(--text-muted);
-        max-width: 580px;
-        margin-bottom: 40px;
+        max-width: 600px;
+        margin-bottom: 45px;
         font-weight: 400;
     }
 
-    .hero-actions {
+    .hero-cta-group {
         display: flex;
         gap: 20px;
-        align-items: center;
     }
 
-    .btn-primary {
-        background: var(--accent-orange);
+    .btn-monopo {
+        background: var(--neon-orange);
         color: #fff;
-        padding: 16px 36px;
-        border-radius: 50px;
-        font-weight: 600;
+        padding: 18px 40px;
+        border-radius: 100px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         text-decoration: none;
-        transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s ease;
-        box-shadow: 0 10px 30px rgba(255, 85, 0, 0.3);
+        box-shadow: 0 10px 30px rgba(255, 51, 0, 0.35);
+        transition: transform 0.3s var(--ease-out-expo), box-shadow 0.3s ease;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 15px 40px rgba(255, 85, 0, 0.5);
+    .btn-monopo:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 20px 45px rgba(255, 51, 0, 0.5);
     }
 
-    .btn-secondary {
+    .btn-monopo-outline {
         background: transparent;
         color: var(--text-main);
-        padding: 16px 36px;
-        border-radius: 50px;
-        font-weight: 600;
+        padding: 18px 40px;
+        border-radius: 100px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         text-decoration: none;
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border-subtle);
         transition: all 0.3s ease;
     }
 
-    .btn-secondary:hover {
-        border-color: var(--accent-orange);
-        color: var(--accent-orange);
+    .btn-monopo-outline:hover {
+        border-color: var(--neon-orange);
+        color: var(--neon-orange);
     }
 
-    /* Hero Avatar Monopo Style */
-    .hero-visual {
+    /* Interactive Showcase Avatar Card */
+    .hero-showcase {
         display: flex;
         justify-content: center;
-        position: relative;
     }
 
-    .avatar-container {
-        width: 380px;
-        height: 380px;
-        border-radius: 30px;
-        position: relative;
+    .showcase-card {
+        width: 420px;
+        height: 480px;
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 32px;
         overflow: hidden;
-        border: 1px solid var(--border-color);
-        background: var(--card-bg);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-        transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
-        transition: transform 0.5s var(--transition-smooth);
+        position: relative;
+        box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+        transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+        transition: transform 0.6s var(--ease-out-expo);
+        will-change: transform, filter;
     }
 
-    .avatar-container:hover {
+    .showcase-card:hover {
         transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
     }
 
-    .avatar-container img {
+    .showcase-card img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        filter: grayscale(20%) contrast(110%);
+        filter: grayscale(15%) contrast(110%);
     }
 
-    /* Sections General */
+    .showcase-badge {
+        position: absolute;
+        bottom: 25px;
+        left: 25px;
+        background: rgba(3, 7, 18, 0.85);
+        backdrop-filter: blur(15px);
+        border: 1px solid var(--border-subtle);
+        padding: 12px 24px;
+        border-radius: 100px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--neon-orange);
+        font-weight: 700;
+    }
+
+    /* Monopo Sections */
     section {
-        padding: 140px 40px;
-        max-width: 1400px;
+        padding: 160px 60px;
+        max-width: 1600px;
         margin: 0 auto;
     }
 
-    .section-header {
-        margin-bottom: 80px;
+    .section-header-monopo {
+        margin-bottom: 90px;
     }
 
-    .section-tag {
-        font-size: 0.85rem;
+    .section-tag-monopo {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.9rem;
         text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--accent-orange);
+        letter-spacing: 3px;
+        color: var(--neon-orange);
         font-weight: 700;
         margin-bottom: 15px;
         display: block;
     }
 
-    .section-title {
+    .section-title-monopo {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: clamp(2.5rem, 4vw, 4rem);
-        font-weight: 700;
-        letter-spacing: -1.5px;
-        line-height: 1.1;
+        font-size: clamp(3rem, 5vw, 5.5rem);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        line-height: 1.05;
     }
 
-    /* About & Skills Grid */
-    .about-grid {
+    /* About Grid & Skills */
+    .about-monopo-grid {
         display: grid;
         grid-template-columns: 1.1fr 0.9fr;
-        gap: 60px;
+        gap: 70px;
         align-items: start;
     }
 
-    .about-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        padding: 50px;
-        border-radius: 24px;
-        backdrop-filter: blur(20px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    .about-text-card {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        padding: 60px;
+        border-radius: 32px;
+        backdrop-filter: blur(25px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
     }
 
-    .about-card p {
+    .about-text-card p {
         color: var(--text-muted);
-        font-size: 1.1rem;
-        margin-bottom: 20px;
+        font-size: 1.2rem;
+        margin-bottom: 25px;
     }
 
-    .skills-container {
+    .skills-monopo-stack {
         display: flex;
         flex-direction: column;
         gap: 25px;
     }
 
-    .skill-box {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        padding: 25px 30px;
-        border-radius: 18px;
-        backdrop-filter: blur(15px);
+    .skill-item-monopo {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        padding: 28px 35px;
+        border-radius: 20px;
+        backdrop-filter: blur(20px);
         transition: border-color 0.3s ease, transform 0.3s ease;
     }
 
-    .skill-box:hover {
-        border-color: var(--accent-orange);
-        transform: translateX(5px);
+    .skill-item-monopo:hover {
+        border-color: var(--neon-orange);
+        transform: translateX(8px);
     }
 
-    .skill-info {
+    .skill-meta {
         display: flex;
         justify-content: space-between;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem;
         margin-bottom: 12px;
-        font-weight: 600;
-        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-    .skill-track {
+    .skill-bar-bg {
         height: 6px;
         background: rgba(255,255,255,0.05);
         border-radius: 3px;
         overflow: hidden;
     }
 
-    .skill-fill {
+    .skill-bar-progress {
         height: 100%;
-        background: linear-gradient(90deg, var(--accent-orange), #ff8833);
+        background: linear-gradient(90deg, var(--neon-orange), #ff8833);
         border-radius: 3px;
-        transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: width 1.4s var(--ease-out-expo);
     }
 
-    /* Experience Timeline Monopo Style */
-    .timeline-grid {
+    /* Experience Grid Monopo Style */
+    .experience-monopo-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-        gap: 30px;
+        grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+        gap: 35px;
     }
 
-    .experience-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        padding: 40px;
-        backdrop-filter: blur(20px);
+    .experience-item-card {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 32px;
+        padding: 50px;
+        backdrop-filter: blur(25px);
         position: relative;
         overflow: hidden;
-        transition: transform 0.4s var(--transition-smooth), border-color 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.4s var(--ease-out-expo), border-color 0.3s ease, box-shadow 0.3s ease;
         will-change: transform, filter;
     }
 
-    .experience-card:hover {
-        transform: translateY(-8px);
-        border-color: rgba(255, 85, 0, 0.5);
-        box-shadow: 0 30px 60px rgba(255, 85, 0, 0.1);
+    .experience-item-card:hover {
+        transform: translateY(-10px);
+        border-color: rgba(255, 51, 0, 0.6);
+        box-shadow: 0 40px 80px rgba(255, 51, 0, 0.12);
     }
 
-    .experience-card::before {
+    .experience-item-card::after {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 4px;
+        width: 5px;
         height: 100%;
-        background: var(--accent-orange);
-        opacity: 0.6;
-        transition: opacity 0.3s ease;
+        background: var(--neon-orange);
+        opacity: 0.8;
     }
 
-    .experience-card:hover::before {
-        opacity: 1;
-    }
-
-    .exp-company {
+    .exp-tagline {
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.85rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1.5px;
-        color: var(--accent-orange);
-        margin-bottom: 10px;
-    }
-
-    .exp-role {
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.5rem;
-        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--neon-orange);
         margin-bottom: 15px;
-        color: var(--text-main);
     }
 
-    .exp-list {
+    .exp-heading {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: -0.5px;
+    }
+
+    .exp-details-list {
         list-style: none;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        color: var(--text-muted);
-        margin-top: 20px;
-    }
-
-    .exp-list li {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        font-size: 0.95rem;
-    }
-
-    .exp-list li i {
-        color: var(--accent-orange);
-        margin-top: 5px;
-    }
-
-    /* Education & Certifications Grid */
-    .edu-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 30px;
-    }
-
-    .edu-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 20px;
-        padding: 35px;
-        backdrop-filter: blur(20px);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: transform 0.4s var(--transition-smooth), border-color 0.3s ease;
-        will-change: transform, filter;
-    }
-
-    .edu-card:hover {
-        transform: translateY(-6px);
-        border-color: var(--accent-orange);
-    }
-
-    .edu-badge {
-        font-size: 0.8rem;
-        background: rgba(56, 189, 248, 0.1);
-        color: var(--accent-blue);
-        padding: 6px 14px;
-        border-radius: 20px;
-        width: fit-content;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-
-    .edu-title {
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 10px;
-    }
-
-    .edu-institution {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        margin-bottom: 20px;
-    }
-
-    .edu-actions {
-        display: flex;
         gap: 12px;
-        margin-top: 20px;
-    }
-
-    .btn-download {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border-color);
-        color: var(--text-main);
-        padding: 10px 18px;
-        border-radius: 10px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-download:hover {
-        background: var(--accent-orange);
-        border-color: var(--accent-orange);
-        color: #fff;
-    }
-
-    /* Contact Section */
-    .contact-grid {
-        display: grid;
-        grid-template-columns: 1fr 1.2fr;
-        gap: 50px;
-    }
-
-    .contact-info-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        padding: 45px;
-        backdrop-filter: blur(20px);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .contact-details {
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
-        margin: 30px 0;
-    }
-
-    .contact-item {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .contact-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 14px;
-        background: rgba(255, 85, 0, 0.1);
-        color: var(--accent-orange);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        border: 1px solid rgba(255, 85, 0, 0.2);
-    }
-
-    .contact-text span {
-        font-size: 0.85rem;
         color: var(--text-muted);
-        display: block;
-    }
-
-    .contact-text a, .contact-text p {
-        color: var(--text-main);
-        font-weight: 600;
-        text-decoration: none;
+        margin-top: 25px;
         font-size: 1.05rem;
     }
 
-    .social-links {
+    .exp-details-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .exp-details-list li i {
+        color: var(--neon-orange);
+        margin-top: 5px;
+    }
+
+    /* Education Grid Monopo Style */
+    .education-monopo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 35px;
+    }
+
+    .education-item-card {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 28px;
+        padding: 45px;
+        backdrop-filter: blur(25px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.4s var(--ease-out-expo), border-color 0.3s ease;
+        will-change: transform, filter;
+    }
+
+    .education-item-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--neon-orange);
+    }
+
+    .edu-status-tag {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.8rem;
+        background: rgba(0, 240, 255, 0.1);
+        color: var(--neon-blue);
+        padding: 6px 16px;
+        border-radius: 100px;
+        width: fit-content;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+    }
+
+    .edu-main-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+
+    .edu-inst-name {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        margin-bottom: 25px;
+    }
+
+    .edu-action-btns {
+        display: flex;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .btn-download-cert {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-main);
+        padding: 12px 22px;
+        border-radius: 12px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-download-cert:hover {
+        background: var(--neon-orange);
+        border-color: var(--neon-orange);
+        color: #fff;
+    }
+
+    /* Contact Monopo Style */
+    .contact-monopo-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 60px;
+    }
+
+    .contact-card-box {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 32px;
+        padding: 55px;
+        backdrop-filter: blur(25px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .contact-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin: 35px 0;
+    }
+
+    .contact-method-item {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .contact-icon-box {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        background: rgba(255, 51, 0, 0.1);
+        color: var(--neon-orange);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        border: 1px solid rgba(255, 51, 0, 0.25);
+    }
+
+    .contact-info-text span {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+
+    .contact-info-text a, .contact-info-text p {
+        color: var(--text-main);
+        font-weight: 700;
+        text-decoration: none;
+        font-size: 1.15rem;
+        font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .social-network-links {
         display: flex;
         gap: 15px;
     }
 
-    .social-btn {
-        width: 45px;
-        height: 45px;
+    .social-net-btn {
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border-color);
+        border: 1px solid var(--border-subtle);
         color: var(--text-main);
         display: flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
         transition: all 0.3s ease;
+        font-size: 1.2rem;
     }
 
-    .social-btn:hover {
-        background: var(--accent-orange);
-        border-color: var(--accent-orange);
-        transform: translateY(-3px);
+    .social-net-btn:hover {
+        background: var(--neon-orange);
+        border-color: var(--neon-orange);
+        transform: translateY(-4px);
     }
 
-    .contact-form-card {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 24px;
-        padding: 45px;
-        backdrop-filter: blur(20px);
+    .contact-form-box {
+        background: var(--surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 32px;
+        padding: 55px;
+        backdrop-filter: blur(25px);
     }
 
-    .form-group {
+    .monopo-form-group {
         margin-bottom: 25px;
     }
 
-    .form-group label {
+    .monopo-form-group label {
         display: block;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        font-family: 'Space Grotesk', sans-serif;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         color: var(--text-muted);
     }
 
-    .form-input {
+    .monopo-input {
         width: 100%;
-        padding: 16px 20px;
-        background: rgba(6, 9, 19, 0.5);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
+        padding: 18px 22px;
+        background: rgba(3, 7, 18, 0.6);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
         color: var(--text-main);
         font-family: inherit;
-        font-size: 1rem;
+        font-size: 1.05rem;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .form-input:focus {
+    .monopo-input:focus {
         outline: none;
-        border-color: var(--accent-orange);
-        box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.15);
+        border-color: var(--neon-orange);
+        box-shadow: 0 0 0 4px rgba(255, 51, 0, 0.15);
     }
 
-    textarea.form-input {
-        min-height: 140px;
+    textarea.monopo-input {
+        min-height: 150px;
         resize: vertical;
     }
 
     /* Footer */
     footer {
-        border-top: 1px solid var(--border-color);
-        padding: 50px 40px;
-        background: rgba(6, 9, 19, 0.95);
+        border-top: 1px solid var(--border-subtle);
+        padding: 60px;
+        background: rgba(3, 7, 18, 0.95);
         text-align: center;
     }
 
-    .footer-content {
-        max-width: 1400px;
+    .footer-inner {
+        max-width: 1600px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
 
-    .copyright {
+    .copyright-text {
         color: var(--text-muted);
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-        .hero-grid, .about-grid, .contact-grid {
+    /* Responsive */
+    @media (max-width: 1100px) {
+        .hero-layout, .about-monopo-grid, .contact-monopo-grid {
             grid-template-columns: 1fr;
-            gap: 40px;
+            gap: 50px;
         }
-        .hero-visual {
+        .hero-showcase {
             justify-content: center;
         }
-        .nav-links {
+        .nav-menu {
             display: none;
         }
-        .footer-content {
+        .footer-inner {
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
     }
 </style>
 
 
-<!-- Kinetic Custom Cursor -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-circle" id="cursorCircle"></div>
+<!-- Monopo Custom Kinetic Cursor -->
+<div class="cursor-core" id="cursorCore"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
 
-<!-- WebGL-like Canvas Background -->
-<canvas id="bg-canvas"></canvas>
+<!-- WebGL-like Particles Canvas -->
+<canvas id="monopo-canvas"></canvas>
 
-<!-- Header -->
+<!-- Header Navigation -->
 <header>
-    <div class="nav-container">
-        <a href="#" class="logo"><i class="fas fa-terminal" style="color: var(--accent-orange);"></i> Michael<span>.G</span></a>
-        <ul class="nav-links">
+    <div class="nav-wrapper">
+        <a href="#" class="brand-logo"><i class="fas fa-terminal" style="color: var(--neon-orange);"></i> Michael<span>.Garguir</span></a>
+        <ul class="nav-menu">
             <li><a href="#about">Sobre Mí</a></li>
-            <li><a href="#experience">Experiencia</a></li>
+            <li><a href="#experience">Trayectoria</a></li>
             <li><a href="#education">Educación</a></li>
             <li><a href="#contact">Contacto</a></li>
         </ul>
@@ -694,23 +717,26 @@
 </header>
 
 <!-- Hero Section -->
-<section class="hero">
-    <div class="hero-grid">
-        <div class="hero-text">
-            <div class="hero-tag">
-                <i class="fas fa-shield-alt"></i> Portfolio & Ciberseguridad
+<section class="monopo-hero">
+    <div class="hero-layout">
+        <div class="hero-text-content">
+            <div style="font-family: 'Space Grotesk'; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px; color: var(--neon-orange); font-weight: 700; margin-bottom: 20px;">
+                <i class="fas fa-shield-alt"></i> Creative Dev & Cybersecurity
             </div>
-            <h1 class="hero-title">Michael <span>Garguir</span></h1>
-            <h2 style="font-family: 'Space Grotesk'; font-size: 1.8rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 20px;">Desarrollador Profesional & Especialista en Ciberseguridad</h2>
-            <p class="hero-desc">Más de 6 años de trayectoria informática puliendo sistemas seguros, código en Python de alto rendimiento y arquitectura web inmersiva de vanguardia.</p>
-            <div class="hero-actions">
-                <a href="#contact" class="btn-primary">Contáctame <i class="fas fa-arrow-right"></i></a>
-                <a href="#experience" class="btn-secondary">Ver Experiencia</a>
+            <h1 class="hero-main-title">
+                <span>Michael</span>
+                <span class="highlight">Garguir</span>
+            </h1>
+            <p class="hero-subtitle-box">Programador profesional con más de 6 años de experiencia en informática. Especializado en ingeniería de software con Python, arquitectura web y defensa contra amenazas cibernéticas.</p>
+            <div class="hero-cta-group">
+                <a href="#contact" class="btn-monopo">Iniciar Proyecto <i class="fas fa-arrow-right"></i></a>
+                <a href="#experience" class="btn-monopo-outline">Ver Experiencia</a>
             </div>
         </div>
-        <div class="hero-visual">
-            <div class="avatar-container" id="tiltCard">
+        <div class="hero-showcase">
+            <div class="showcase-card" id="tiltCard">
                 <img src="" alt="Michael Garguir">
+                <div class="showcase-badge">Garupá, Misiones — AR</div>
             </div>
         </div>
     </div>
@@ -718,36 +744,36 @@
 
 <!-- About Section -->
 <section id="about">
-    <div class="section-header">
-        <span class="section-tag">01 / Perfil Profesional</span>
-        <h2 class="section-title">Sobre Mí</h2>
+    <div class="section-header-monopo">
+        <span class="section-tag-monopo">01 / Perfil General</span>
+        <h2 class="section-title-monopo">Sobre Mí</h2>
     </div>
-    <div class="about-grid">
-        <div class="about-card">
-            <h3 style="font-family: 'Space Grotesk'; font-size: 1.8rem; margin-bottom: 20px; color: var(--text-main);">Ingeniosidad Técnica & Seguridad Defensiva</h3>
-            <p>Soy un programador apasionado con más de 7 años de experiencia ininterrumpida en el sector tecnológico. Mi trayectoria comenzó durante mis estudios secundarios y se ha expandido mediante certificaciones avanzadas.</p>
-            <p>Combino el desarrollo de software limpio (Python, HTML/CSS) con la administración robusta de sistemas Linux y bases de datos SQL. En el ámbito de la ciberseguridad, aplico metodologías ofensivas y defensivas para la mitigación de amenazas.</p>
+    <div class="about-monopo-grid">
+        <div class="about-text-card">
+            <h3 style="font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 25px; text-transform: uppercase; letter-spacing: -0.5px;">Ingeniosidad & Ciberseguridad</h3>
+            <p>Soy un programador apasionado con más de 7 años de trayectoria en el sector tecnológico. Mi recorrido comenzó en la etapa secundaria y evolucionó de manera constante a través de titulaciones superiores y especializaciones avanzadas.</p>
+            <p>Mi stack principal combina desarrollo en Python, interfaces HTML/CSS fluidas, bases de datos SQL y administración robusta de sistemas operativos Linux. En paralelo, desarrollo competencias clave en ciberseguridad ofensiva y defensiva.</p>
         </div>
-        <div class="skills-container">
-            <div class="skill-box">
-                <div class="skill-info"><span>Python & Hacking Ético</span> <span>90%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width: 90%;"></div></div>
+        <div class="skills-monopo-stack">
+            <div class="skill-item-monopo">
+                <div class="skill-meta"><span>Python & Hacking Ético</span> <span>90%</span></div>
+                <div class="skill-bar-bg"><div class="skill-bar-progress" style="width: 90%;"></div></div>
             </div>
-            <div class="skill-box">
-                <div class="skill-info"><span>HTML / CSS / Frontend</span> <span>85%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width: 85%;"></div></div>
+            <div class="skill-item-monopo">
+                <div class="skill-meta"><span>HTML / CSS / Frontend</span> <span>85%</span></div>
+                <div class="skill-bar-bg"><div class="skill-bar-progress" style="width: 85%;"></div></div>
             </div>
-            <div class="skill-box">
-                <div class="skill-info"><span>Linux & Sistemas</span> <span>80%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width: 80%;"></div></div>
+            <div class="skill-item-monopo">
+                <div class="skill-meta"><span>Administración Linux</span> <span>80%</span></div>
+                <div class="skill-bar-bg"><div class="skill-bar-progress" style="width: 80%;"></div></div>
             </div>
-            <div class="skill-box">
-                <div class="skill-info"><span>Bases de Datos SQL</span> <span>75%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width: 75%;"></div></div>
+            <div class="skill-item-monopo">
+                <div class="skill-meta"><span>Bases de Datos SQL</span> <span>75%</span></div>
+                <div class="skill-bar-bg"><div class="skill-bar-progress" style="width: 75%;"></div></div>
             </div>
-            <div class="skill-box">
-                <div class="skill-info"><span>Ciberseguridad Ofensiva</span> <span>70%</span></div>
-                <div class="skill-track"><div class="skill-fill" style="width: 70%;"></div></div>
+            <div class="skill-item-monopo">
+                <div class="skill-meta"><span>Ciberseguridad & Auditoría</span> <span>70%</span></div>
+                <div class="skill-bar-bg"><div class="skill-bar-progress" style="width: 70%;"></div></div>
             </div>
         </div>
     </div>
@@ -755,44 +781,44 @@
 
 <!-- Experience Section -->
 <section id="experience">
-    <div class="section-header">
-        <span class="section-tag">02 / Trayectoria</span>
-        <h2 class="section-title">Experiencia Profesional</h2>
+    <div class="section-header-monopo">
+        <span class="section-tag-monopo">02 / Trayectoria</span>
+        <h2 class="section-title-monopo">Experiencia Profesional</h2>
     </div>
-    <div class="timeline-grid">
-        <div class="experience-card">
-            <div class="exp-company">Silicon Misiones</div>
-            <h3 class="exp-role">Programador</h3>
-            <ul class="exp-list">
-                <li><i class="fas fa-check-circle"></i> Asimilación rápida de conceptos avanzados en múltiples lenguajes.</li>
-                <li><i class="fas fa-check-circle"></i> Creación de programas orientados a automatización y rendimiento.</li>
-                <li><i class="fas fa-check-circle"></i> Prosecución administrativa y gestión de proyectos de desarrollo.</li>
+    <div class="experience-monopo-grid">
+        <div class="experience-item-card">
+            <div class="exp-tagline">Silicon Misiones</div>
+            <h3 class="exp-heading">Programador</h3>
+            <ul class="exp-details-list">
+                <li><i class="fas fa-chevron-right"></i> Asimilación rápida de conceptos y sintaxis de diversos lenguajes de programación.</li>
+                <li><i class="fas fa-chevron-right"></i> Creación de programas orientados a optimización y automatización de procesos.</li>
+                <li><i class="fas fa-chevron-right"></i> Prosecución administrativa y gestión de requerimientos tecnológicos.</li>
             </ul>
         </div>
-        <div class="experience-card">
-            <div class="exp-company">Escuela de Robótica (2017 - 2019)</div>
-            <h3 class="exp-role">Especialista en Robótica</h3>
-            <ul class="exp-list">
-                <li><i class="fas fa-check-circle"></i> Comprensión e implementación avanzada de servomotores.</li>
-                <li><i class="fas fa-check-circle"></i> Manufacturación y ensamblaje de mecanismos automatizados.</li>
-                <li><i class="fas fa-check-circle"></i> Interpretación de macroórdenes y electrónica básica.</li>
+        <div class="experience-item-card">
+            <div class="exp-tagline">Escuela de Robótica (2017 - 2019)</div>
+            <h3 class="exp-heading">Especialista en Robótica</h3>
+            <ul class="exp-details-list">
+                <li><i class="fas fa-chevron-right"></i> Comprensión e implementación avanzada de servomotores y componentes lógicos.</li>
+                <li><i class="fas fa-chevron-right"></i> Manufacturación y montaje de mecanismos automatizados.</li>
+                <li><i class="fas fa-chevron-right"></i> Interpretación de macroórdenes y fundamentos de electrónica básica.</li>
             </ul>
         </div>
-        <div class="experience-card">
-            <div class="exp-company">Prácticas Estudiantiles</div>
-            <h3 class="exp-role">Desarrollador Full-Stack</h3>
-            <ul class="exp-list">
-                <li><i class="fas fa-check-circle"></i> Creación y despliegue de sitios web interactivos.</li>
-                <li><i class="fas fa-check-circle"></i> Operación avanzada bajo entornos Linux.</li>
-                <li><i class="fas fa-check-circle"></i> Confección de planillas y arquitectura SQL optimizada.</li>
+        <div class="experience-item-card">
+            <div class="exp-tagline">Prácticas Estudiantiles</div>
+            <h3 class="exp-heading">Desarrollador Full-Stack</h3>
+            <ul class="exp-details-list">
+                <li><i class="fas fa-chevron-right"></i> Diseño y despliegue integral de sitios web interactivos.</li>
+                <li><i class="fas fa-chevron-right"></i> Manejo avanzado y configuración de entornos Linux.</li>
+                <li><i class="fas fa-chevron-right"></i> Confección de planillas de control y modelado de Bases de Datos SQL.</li>
             </ul>
         </div>
-        <div class="experience-card">
-            <div class="exp-company">Udemy (Agosto 2025)</div>
-            <h3 class="exp-role">Python Hacking & Ciberseguridad</h3>
-            <ul class="exp-list">
-                <li><i class="fas fa-check-circle"></i> Certificación en técnicas de hacking ético con Python (35 horas).</li>
-                <li><i class="fas fa-check-circle"></i> Desarrollo de herramientas de seguridad ofensiva y auditoría.</li>
+        <div class="experience-item-card">
+            <div class="exp-tagline">Udemy (Agosto 2025)</div>
+            <h3 class="exp-heading">Python Hacking & Hacking Ético</h3>
+            <ul class="exp-details-list">
+                <li><i class="fas fa-chevron-right"></i> Certificación intensiva en técnicas de ciberseguridad ofensiva con Python (35 horas).</li>
+                <li><i class="fas fa-chevron-right"></i> Desarrollo de scripts para auditorías y mitigación de vulnerabilidades.</li>
             </ul>
         </div>
     </div>
@@ -800,59 +826,59 @@
 
 <!-- Education Section -->
 <section id="education">
-    <div class="section-header">
-        <span class="section-tag">03 / Formación</span>
-        <h2 class="section-title">Educación & Certificados</h2>
+    <div class="section-header-monopo">
+        <span class="section-tag-monopo">03 / Formación</span>
+        <h2 class="section-title-monopo">Educación & Certificados</h2>
     </div>
-    <div class="edu-grid">
-        <div class="edu-card">
+    <div class="education-monopo-grid">
+        <div class="education-item-card">
             <div>
-                <span class="edu-badge">Titulado Oficial</span>
-                <h3 class="edu-title">Técnico en Informática</h3>
-                <p class="edu-institution">Instituto Superior Roque Gonzalez (2019 - 2023)</p>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Egresado con especialización formal en desarrollo de software y sistemas.</p>
+                <span class="edu-status-tag">Titulado Oficial</span>
+                <h3 class="edu-main-title">Técnico en Informática</h3>
+                <p class="edu-inst-name">Instituto Superior Roque Gonzalez (2019 - 2023)</p>
+                <p style="color: var(--text-muted);">Egresado con especialización formal en desarrollo de software y sistemas.</p>
             </div>
         </div>
-        <div class="edu-card">
+        <div class="education-item-card">
             <div>
-                <span class="edu-badge">Certificación Presencial</span>
-                <h3 class="edu-title">Introducción a la Programación</h3>
-                <p class="edu-institution">Academia del Programador Misionero - Silicon Misiones</p>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Abril 2024 — Trayecto de 24 horas presenciales.</p>
+                <span class="edu-status-tag">Certificación Presencial</span>
+                <h3 class="edu-main-title">Introducción a la Programación</h3>
+                <p class="edu-inst-name">Academia del Programador Misionero — Silicon Misiones</p>
+                <p style="color: var(--text-muted);">Abril 2024 — Trayecto formativo de 24 horas.</p>
             </div>
-            <div class="edu-actions">
-                <a href="Garguir Michael .pdf" class="btn-download" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
+            <div class="edu-action-btns">
+                <a href="Garguir Michael .pdf" class="btn-download-cert" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
             </div>
         </div>
-        <div class="edu-card">
+        <div class="education-item-card">
             <div>
-                <span class="edu-badge">Ciberseguridad</span>
-                <h3 class="edu-title">Amenazas, Consejos y Buenas Prácticas</h3>
-                <p class="edu-institution">Silicon Misiones</p>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Formación especializada en prevención y blindaje corporativo.</p>
+                <span class="edu-status-tag">Ciberseguridad</span>
+                <h3 class="edu-main-title">Amenazas, Consejos y Buenas Prácticas</h3>
+                <p class="edu-inst-name">Silicon Misiones</p>
+                <p style="color: var(--text-muted);">Capacitación virtual en blindaje digital y mitigación de riesgos.</p>
             </div>
-            <div class="edu-actions">
-                <a href="Certificado Garguir Michael.pdf" class="btn-download" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
+            <div class="edu-action-btns">
+                <a href="Certificado Garguir Michael.pdf" class="btn-download-cert" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
             </div>
         </div>
-        <div class="edu-card">
+        <div class="education-item-card">
             <div>
-                <span class="edu-badge">Especialización Avanzada</span>
-                <h3 class="edu-title">Python Hacking & Hacking Ético</h3>
-                <p class="edu-institution">Udemy — Santiago Hernández</p>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Agosto 2025 — 35 horas intensivas.</p>
+                <span class="edu-status-tag">Especialización</span>
+                <h3 class="edu-main-title">Python Hacking & Ciberseguridad</h3>
+                <p class="edu-inst-name">Udemy — Santiago Hernández</p>
+                <p style="color: var(--text-muted);">Agosto 2025 — 35 horas intensivas.</p>
             </div>
-            <div class="edu-actions">
-                <a href="Certificado Hacking.jpg" class="btn-download" download><i class="fas fa-image"></i> JPG</a>
-                <a href="Certificado de hacking.pdf" class="btn-download" download><i class="fas fa-file-pdf"></i> PDF</a>
+            <div class="edu-action-btns">
+                <a href="Certificado Hacking.jpg" class="btn-download-cert" download><i class="fas fa-image"></i> JPG</a>
+                <a href="Certificado de hacking.pdf" class="btn-download-cert" download><i class="fas fa-file-pdf"></i> PDF</a>
             </div>
         </div>
-        <div class="edu-card">
+        <div class="education-item-card">
             <div>
-                <span class="edu-badge">Idiomas</span>
-                <h3 class="edu-title">Inglés Técnico para Informática</h3>
-                <p class="edu-institution">Secundario (2019 - 2023)</p>
-                <p style="color: var(--text-muted); font-size: 0.95rem;">Comprensión avanzada de documentación técnica y código en inglés.</p>
+                <span class="edu-status-tag">Idiomas</span>
+                <h3 class="edu-main-title">Inglés Técnico Informático</h3>
+                <p class="edu-inst-name">Secundario (2019 - 2023)</p>
+                <p style="color: var(--text-muted);">Titulado con certificación en inglés técnico para lectura de documentación y código.</p>
             </div>
         </div>
     </div>
@@ -860,52 +886,52 @@
 
 <!-- Contact Section -->
 <section id="contact">
-    <div class="section-header">
-        <span class="section-tag">04 / Conexión</span>
-        <h2 class="section-title">Hablemos</h2>
+    <div class="section-header-monopo">
+        <span class="section-tag-monopo">04 / Conexión</span>
+        <h2 class="section-title-monopo">Hablemos</h2>
     </div>
-    <div class="contact-grid">
-        <div class="contact-info-card">
+    <div class="contact-monopo-grid">
+        <div class="contact-card-box">
             <div>
-                <h3 style="font-family: 'Space Grotesk'; font-size: 1.8rem; margin-bottom: 15px;">Información de Contacto</h3>
-                <p style="color: var(--text-muted); font-size: 1.05rem;">¿Tienes un proyecto, propuesta o consulta sobre ciberseguridad? Escríbeme y responderé a la brevedad.</p>
-                <div class="contact-details">
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                        <div class="contact-text">
-                            <span>Email Directo</span>
+                <h3 style="font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 20px; text-transform: uppercase;">Información de Contacto</h3>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">¿Tienes un proyecto, propuesta laboral o consulta sobre seguridad informática? Escríbeme directamente.</p>
+                <div class="contact-methods">
+                    <div class="contact-method-item">
+                        <div class="contact-icon-box"><i class="fas fa-envelope"></i></div>
+                        <div class="contact-info-text">
+                            <span>Correo Electrónico</span>
                             <a href="mailto:michaelgarguir@gmail.com">michaelgarguir@gmail.com</a>
                         </div>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div class="contact-text">
+                    <div class="contact-method-item">
+                        <div class="contact-icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="contact-info-text">
                             <span>Ubicación</span>
                             <p>Garupá, Misiones, Argentina</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="social-links">
-                <a href="https://github.com/Masauro89" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
-                <a href="https://linkedin.com" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+            <div class="social-network-links">
+                <a href="https://github.com/Masauro89" target="_blank" class="social-net-btn"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com" target="_blank" class="social-net-btn"><i class="fab fa-linkedin-in"></i></a>
             </div>
         </div>
-        <div class="contact-form-card">
+        <div class="contact-form-box">
             <form action="mailto:michaelgarguir@gmail.com" method="POST" enctype="text/plain">
-                <div class="form-group">
+                <div class="monopo-form-group">
                     <label for="name">Tu Nombre</label>
-                    <input type="text" id="name" class="form-input" required placeholder="Ej. Juan Pérez">
+                    <input type="text" id="name" class="monopo-input" required placeholder="Ej. Carlos Gómez">
                 </div>
-                <div class="form-group">
-                    <label for="email">Tu Correo Electrónico</label>
-                    <input type="email" id="email" class="form-input" required placeholder="tu@correo.com">
+                <div class="monopo-form-group">
+                    <label for="email">Tu Email</label>
+                    <input type="email" id="email" class="monopo-input" required placeholder="correo@ejemplo.com">
                 </div>
-                <div class="form-group">
+                <div class="monopo-form-group">
                     <label for="message">Mensaje</label>
-                    <textarea id="message" class="form-input" required placeholder="Escribe tu mensaje o propuesta..."></textarea>
+                    <textarea id="message" class="monopo-input" required placeholder="Escribe tu mensaje..."></textarea>
                 </div>
-                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; border: none; cursor: pointer;">Enviar Mensaje <i class="fas fa-paper-plane"></i></button>
+                <button type="submit" class="btn-monopo" style="width: 100%; justify-content: center; border: none; cursor: pointer;">Enviar Mensaje <i class="fas fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
@@ -913,100 +939,100 @@
 
 <!-- Footer -->
 <footer>
-    <div class="footer-content">
-        <a href="#" class="logo"><i class="fas fa-terminal" style="color: var(--accent-orange);"></i> Michael<span>.G</span></a>
-        <p class="copyright">&copy; 2026 Michael Garguir. Todos los derechos reservados.</p>
+    <div class="footer-inner">
+        <a href="#" class="brand-logo"><i class="fas fa-terminal" style="color: var(--neon-orange);"></i> Michael<span>.Garguir</span></a>
+        <p class="copyright-text">&copy; 2026 Michael Garguir. Todos los derechos reservados.</p>
     </div>
 </footer>
 
-<!-- Advanced Monopo-Style Kinetic & WebGL Script -->
+<!-- Monopo London Interactive Engine -->
 <script>
-    // Custom Kinetic Cursor Physics
-    const dot = document.getElementById('cursorDot');
-    const circle = document.getElementById('cursorCircle');
+    // Kinetic Cursor Physics
+    const core = document.getElementById('cursorCore');
+    const follower = document.getElementById('cursorFollower');
     
-    let mouseX = 0, mouseY = 0;
-    let circleX = 0, circleY = 0;
+    let mx = 0, my = 0;
+    let fx = 0, fy = 0;
 
     window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        dot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+        mx = e.clientX;
+        my = e.clientY;
+        core.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
     });
 
-    function animateCursor() {
-        circleX += (mouseX - circleX) * 0.15;
-        circleY += (mouseY - circleY) * 0.15;
-        circle.style.transform = `translate3d(${circleX - 18}px, ${circleY - 18}px, 0)`;
-        requestAnimationFrame(animateCursor);
+    function renderCursor() {
+        fx += (mx - fx) * 0.18;
+        fy += (my - fy) * 0.18;
+        follower.style.transform = `translate3d(${fx}px, ${fy}px, 0)`;
+        requestAnimationFrame(renderCursor);
     }
-    animateCursor();
+    renderCursor();
 
-    // Background WebGL-like Particles Canvas
-    const canvas = document.getElementById('bg-canvas');
+    // WebGL-style Particle Canvas Background
+    const canvas = document.getElementById('monopo-canvas');
     const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
 
     window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
     });
 
-    const particles = Array.from({ length: 45 }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 2 + 0.5,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        color: Math.random() > 0.5 ? '#FF5500' : '#38bdf8'
+    const dots = Array.from({ length: 50 }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.5 + 0.5,
+        dx: (Math.random() - 0.5) * 0.6,
+        dy: (Math.random() - 0.5) * 0.6,
+        color: Math.random() > 0.4 ? '#ff3300' : '#00f0ff'
     }));
 
-    function drawCanvas() {
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => {
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < 0) p.x = width;
-            if (p.x > width) p.x = 0;
-            if (p.y < 0) p.y = height;
-            if (p.y > height) p.y = 0;
+    function loopCanvas() {
+        ctx.clearRect(0, 0, w, h);
+        dots.forEach(d => {
+            d.x += d.dx;
+            d.y += d.dy;
+            if (d.x < 0) d.x = w;
+            if (d.x > w) d.x = 0;
+            if (d.y < 0) d.y = h;
+            if (d.y > h) d.y = 0;
 
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = 0.35;
+            ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+            ctx.fillStyle = d.color;
+            ctx.globalAlpha = 0.4;
             ctx.fill();
         });
-        requestAnimationFrame(drawCanvas);
+        requestAnimationFrame(loopCanvas);
     }
-    drawCanvas();
+    loopCanvas();
 
-    // 3D Tilt Cards & Motion Blur Physics
-    let lastX = 0, lastY = 0;
-    let currentBlur = 0;
+    // 3D Tilt Cards & Velocity Motion Blur Physics
+    let prevX = 0, prevY = 0;
+    let motionBlurVal = 0;
 
     window.addEventListener('mousemove', (e) => {
-        const speedX = e.clientX - lastX;
-        const speedY = e.clientY - lastY;
-        lastX = e.clientX;
-        lastY = e.clientY;
+        const vx = e.clientX - prevX;
+        const vy = e.clientY - prevY;
+        prevX = e.clientX;
+        prevY = e.clientY;
 
-        const totalSpeed = Math.hypot(speedX, speedY);
-        currentBlur = Math.min(totalSpeed * 0.1, 4);
+        const velocity = Math.hypot(vx, vy);
+        motionBlurVal = Math.min(velocity * 0.12, 4.5);
 
-        const tiltCards = document.querySelectorAll('.experience-card, .edu-card, .avatar-container, .about-card, .contact-info-card, .contact-form-card');
-        
-        tiltCards.forEach(card => {
+        const interactiveCards = document.querySelectorAll('.experience-item-card, .education-item-card, .showcase-card, .about-text-card, .contact-card-box, .contact-form-box');
+
+        interactiveCards.forEach(card => {
             const rect = card.getBoundingClientRect();
-            const cardX = e.clientX - (rect.left + rect.width / 2);
-            const cardY = e.clientY - (rect.top + rect.height / 2);
+            const cardCx = e.clientX - (rect.left + rect.width / 2);
+            const cardCy = e.clientY - (rect.top + rect.height / 2);
 
-            if (Math.abs(cardX) < rect.width && Math.abs(cardY) < rect.height) {
-                const rotateX = (cardY / (rect.height / 2)) * -5;
-                const rotateY = (cardX / (rect.width / 2)) * 5;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-                card.style.filter = `blur(${currentBlur}px)`;
+            if (Math.abs(cardCx) < rect.width && Math.abs(cardCy) < rect.height) {
+                const rx = (cardCy / (rect.height / 2)) * -6;
+                const ry = (cardCx / (rect.width / 2)) * 6;
+                card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(12px)`;
+                card.style.filter = `blur(${motionBlurVal}px)`;
             } else {
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
                 card.style.filter = `blur(0px)`;
@@ -1014,12 +1040,11 @@
         });
     });
 
-    // Decay blur inertia
     setInterval(() => {
-        currentBlur *= 0.75;
-        if (currentBlur < 0.1) {
-            document.querySelectorAll('.experience-card, .edu-card, .avatar-container, .about-card').forEach(card => {
-                if (!card.matches(':hover')) card.style.filter = 'blur(0px)';
+        motionBlurVal *= 0.8;
+        if (motionBlurVal < 0.1) {
+            document.querySelectorAll('.experience-item-card, .education-item-card, .showcase-card, .about-text-card').forEach(card => {
+                if (!card.matches(':hover')) card.style.filter = `blur(0px)`;
             });
         }
     }, 50);
