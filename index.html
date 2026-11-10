@@ -1,1067 +1,1026 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Garguir - Programador</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #0f172a;
-            --accent: #f97316;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+<style>
+    :root {
+        --bg-primary: #060913;
+        --bg-secondary: #0f172a;
+        --card-bg: rgba(18, 24, 38, 0.75);
+        --border-color: rgba(255, 255, 255, 0.1);
+        --accent-orange: #FF5500;
+        --accent-blue: #38bdf8;
+        --text-main: #f1f5f9;
+        --text-muted: #94a3b8;
+        --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        cursor: none;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--bg-primary);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    /* Custom Kinetic Cursor */
+    .cursor-dot, .cursor-circle {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        border-radius: 50%;
+        z-index: 9999;
+        transition: transform 0.1s ease;
+    }
+
+    .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--accent-orange);
+    }
+
+    .cursor-circle {
+        width: 36px;
+        height: 36px;
+        border: 1px solid rgba(255, 85, 0, 0.5);
+        background: rgba(255, 85, 0, 0.05);
+        backdrop-filter: blur(2px);
+        transition: width 0.3s, height 0.3s, background 0.3s;
+    }
+
+    body:hover .cursor-dot, body:hover .cursor-circle {
+        opacity: 1;
+    }
+
+    /* Background WebGL-like Dynamic Canvas */
+    #bg-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* Navigation */
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background: rgba(6, 9, 19, 0.8);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 25px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.5px;
+    }
+
+    .logo span {
+        color: var(--accent-orange);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 40px;
+        list-style: none;
+    }
+
+    .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: color 0.3s ease;
+        position: relative;
+    }
+
+    .nav-links a:hover {
+        color: var(--accent-orange);
+    }
+
+    /* Hero Section */
+    .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 0 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 60px;
+        align-items: center;
+        width: 100%;
+        padding-top: 80px;
+    }
+
+    .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 85, 0, 0.1);
+        border: 1px solid rgba(255, 85, 0, 0.3);
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        color: var(--accent-orange);
+        font-weight: 600;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .hero-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(3.5rem, 6vw, 6.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -2px;
+        margin-bottom: 25px;
+    }
+
+    .hero-title span {
+        background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-orange) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        max-width: 580px;
+        margin-bottom: 40px;
+        font-weight: 400;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .btn-primary {
+        background: var(--accent-orange);
+        color: #fff;
+        padding: 16px 36px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s ease;
+        box-shadow: 0 10px 30px rgba(255, 85, 0, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(255, 85, 0, 0.5);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--text-main);
+        padding: 16px 36px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        border-color: var(--accent-orange);
+        color: var(--accent-orange);
+    }
+
+    /* Hero Avatar Monopo Style */
+    .hero-visual {
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    .avatar-container {
+        width: 380px;
+        height: 380px;
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        background: var(--card-bg);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+        transition: transform 0.5s var(--transition-smooth);
+    }
+
+    .avatar-container:hover {
+        transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+    }
+
+    .avatar-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(20%) contrast(110%);
+    }
+
+    /* Sections General */
+    section {
+        padding: 140px 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .section-header {
+        margin-bottom: 80px;
+    }
+
+    .section-tag {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent-orange);
+        font-weight: 700;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .section-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: clamp(2.5rem, 4vw, 4rem);
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        line-height: 1.1;
+    }
+
+    /* About & Skills Grid */
+    .about-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 60px;
+        align-items: start;
+    }
+
+    .about-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        padding: 50px;
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .about-card p {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    .skills-container {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .skill-box {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        padding: 25px 30px;
+        border-radius: 18px;
+        backdrop-filter: blur(15px);
+        transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .skill-box:hover {
+        border-color: var(--accent-orange);
+        transform: translateX(5px);
+    }
+
+    .skill-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .skill-track {
+        height: 6px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .skill-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-orange), #ff8833);
+        border-radius: 3px;
+        transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Experience Timeline Monopo Style */
+    .timeline-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 30px;
+    }
+
+    .experience-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 40px;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.4s var(--transition-smooth), border-color 0.3s ease, box-shadow 0.3s ease;
+        will-change: transform, filter;
+    }
+
+    .experience-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 85, 0, 0.5);
+        box-shadow: 0 30px 60px rgba(255, 85, 0, 0.1);
+    }
+
+    .experience-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent-orange);
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+    }
+
+    .experience-card:hover::before {
+        opacity: 1;
+    }
+
+    .exp-company {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--accent-orange);
+        margin-bottom: 10px;
+    }
+
+    .exp-role {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: var(--text-main);
+    }
+
+    .exp-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        color: var(--text-muted);
+        margin-top: 20px;
+    }
+
+    .exp-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.95rem;
+    }
+
+    .exp-list li i {
+        color: var(--accent-orange);
+        margin-top: 5px;
+    }
+
+    /* Education & Certifications Grid */
+    .edu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 30px;
+    }
+
+    .edu-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 20px;
+        padding: 35px;
+        backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.4s var(--transition-smooth), border-color 0.3s ease;
+        will-change: transform, filter;
+    }
+
+    .edu-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--accent-orange);
+    }
+
+    .edu-badge {
+        font-size: 0.8rem;
+        background: rgba(56, 189, 248, 0.1);
+        color: var(--accent-blue);
+        padding: 6px 14px;
+        border-radius: 20px;
+        width: fit-content;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .edu-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .edu-institution {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        margin-bottom: 20px;
+    }
+
+    .edu-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .btn-download {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-download:hover {
+        background: var(--accent-orange);
+        border-color: var(--accent-orange);
+        color: #fff;
+    }
+
+    /* Contact Section */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 50px;
+    }
+
+    .contact-info-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 45px;
+        backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .contact-details {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        margin: 30px 0;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: rgba(255, 85, 0, 0.1);
+        color: var(--accent-orange);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        border: 1px solid rgba(255, 85, 0, 0.2);
+    }
+
+    .contact-text span {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        display: block;
+    }
+
+    .contact-text a, .contact-text p {
+        color: var(--text-main);
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 1.05rem;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 15px;
+    }
+
+    .social-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .social-btn:hover {
+        background: var(--accent-orange);
+        border-color: var(--accent-orange);
+        transform: translateY(-3px);
+    }
+
+    .contact-form-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 45px;
+        backdrop-filter: blur(20px);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 16px 20px;
+        background: rgba(6, 9, 19, 0.5);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        color: var(--text-main);
+        font-family: inherit;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--accent-orange);
+        box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.15);
+    }
+
+    textarea.form-input {
+        min-height: 140px;
+        resize: vertical;
+    }
+
+    /* Footer */
+    footer {
+        border-top: 1px solid var(--border-color);
+        padding: 50px 40px;
+        background: rgba(6, 9, 19, 0.95);
+        text-align: center;
+    }
+
+    .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .copyright {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .hero-grid, .about-grid, .contact-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+        .hero-visual {
+            justify-content: center;
         }
-        
-        body {
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: #e2e8f0;
-            line-height: 1.6;
-            overflow-x: hidden;
-            perspective: 1200px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        /* Header & Navigation */
-        header {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-        }
-        
-        .logo {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--light);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo i {
-            color: var(--accent);
-        }
-        
         .nav-links {
-            display: flex;
-            gap: 30px;
+            display: none;
         }
-        
-        .nav-links a {
-            color: #cbd5e1;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--primary);
-            transition: var(--transition);
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding-top: 80px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.1) 0%, rgba(15, 23, 42, 0) 70%);
-            z-index: -1;
-        }
-        
-        .hero-content {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            padding: 40px 0;
-        }
-        
-        .hero-text {
-            flex: 1;
-            animation: fadeInLeft 1s ease-out;
-        }
-        
-        .hero-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            animation: fadeInRight 1s ease-out;
-        }
-        
-        .profile-img {
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            border: 5px solid var(--primary);
-            object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            background: linear-gradient(45deg, #1e293b, #334155);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .profile-img::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            background: conic-gradient(transparent, var(--primary), transparent 30%);
-            animation: rotate 4s linear infinite;
-        }
-        
-        .profile-img img {
-            position: absolute;
-            width: 95%;
-            height: 95%;
-            border-radius: 50%;
-            object-fit: cover;
-            z-index: 1;
-        }
-        
-        .hero h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--light);
-            line-height: 1.2;
-        }
-        
-        .hero h2 {
-            font-size: 2rem;
-            font-weight: 500;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin-bottom: 30px;
-            color: #cbd5e1;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: var(--transition);
-            border: 2px solid var(--primary);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
-        }
-        
-        .btn:hover {
-            background: transparent;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            margin-left: 15px;
-        }
-        
-        .btn-outline:hover {
-            background: var(--primary);
-        }
-        
-        /* Sections */
-        section {
-            padding: 100px 0;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-            position: relative;
-        }
-        
-        .section-title h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            display: inline-block;
-            position: relative;
-            padding-bottom: 15px;
-        }
-        
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 4px;
-            background: var(--primary);
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-        
-        /* About Section */
-        .about-content {
-            display: flex;
-            gap: 50px;
-            align-items: center;
-        }
-        
-        .about-text {
-            flex: 1;
-        }
-        
-        .about-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--light);
-        }
-        
-        .about-text p {
-            margin-bottom: 15px;
-            color: #94a3b8;
-        }
-        
-        .about-skills {
-            flex: 1;
-        }
-        
-        .skill {
-            margin-bottom: 25px;
-        }
-        
-        .skill-title {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        
-        .skill-title h4 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: var(--light);
-        }
-        
-        .skill-bar {
-            height: 10px;
-            background: rgba(100, 116, 139, 0.3);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        .skill-progress {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 5px;
-            position: relative;
-            transition: width 1.5s ease-in-out;
-        }
-        
-        .skill-progress::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            animation: shine 2s infinite;
-        }
-        
-        /* Tarjetas con Efecto Glassmorphic, Inclinación 3D y Motion Blur */
-        .timeline-content, .education-card, .contact-card {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(14px) saturate(180%);
-            -webkit-backdrop-filter: blur(14px) saturate(180%);
-            border-radius: 14px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transform-style: preserve-3d;
-            will-change: transform, filter;
-            transition: box-shadow 0.3s ease;
-        }
-        
-        .timeline-content:hover, .education-card:hover, .contact-card:hover {
-            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
-            border-color: rgba(37, 99, 235, 0.4);
-        }
-
-        /* Experience Section */
-        .timeline {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .timeline::before {
-            content: '';
-            position: absolute;
-            width: 4px;
-            background: var(--primary);
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            margin-left: -2px;
-        }
-        
-        .timeline-item {
-            position: relative;
-            width: 50%;
-            padding: 20px 40px;
-            animation: fadeInUp 0.8s ease-out;
-        }
-        
-        .timeline-item:nth-child(odd) {
-            left: 0;
-        }
-        
-        .timeline-item:nth-child(even) {
-            left: 50%;
-        }
-        
-        .timeline-content::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: var(--primary);
-            border-radius: 50%;
-            top: 30px;
-        }
-        
-        .timeline-item:nth-child(odd) .timeline-content::before {
-            right: -50px;
-        }
-        
-        .timeline-item:nth-child(even) .timeline-content::before {
-            left: -50px;
-        }
-        
-        .timeline-content h3 {
-            font-size: 1.5rem;
-            color: var(--light);
-            margin-bottom: 10px;
-        }
-        
-        .timeline-content h4 {
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-        
-        .timeline-content ul {
-            padding-left: 20px;
-        }
-        
-        .timeline-content li {
-            margin-bottom: 10px;
-            color: #94a3b8;
-        }
-        
-        /* Education Section */
-        .education-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        
-        .education-card h3 {
-            font-size: 1.5rem;
-            color: var(--light);
-            margin-bottom: 15px;
-        }
-        
-        .education-card h4 {
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        
-        .education-card p {
-            color: #94a3b8;
-            margin-bottom: 15px;
-        }
-        
-        .education-card ul {
-            padding-left: 20px;
-            color: #94a3b8;
-        }
-        
-        .education-card li {
-            margin-bottom: 8px;
-        }
-        
-        /* Contact Section */
-        .contact-wrapper {
-            display: flex;
-            gap: 50px;
-        }
-        
-        .contact-info {
-            flex: 1;
-        }
-        
-        .contact-card {
-            margin-bottom: 30px;
-            animation: fadeInLeft 0.8s ease-out;
-        }
-        
-        .contact-card h3 {
-            font-size: 1.5rem;
-            color: var(--light);
-            margin-bottom: 20px;
-        }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 1.2rem;
-        }
-        
-        .contact-text h4 {
-            font-size: 1.1rem;
-            color: var(--light);
-            margin-bottom: 5px;
-        }
-        
-        .contact-text p, .contact-text a {
-            color: #94a3b8;
-            text-decoration: none;
-            transition: var(--transition);
-        }
-        
-        .contact-text a:hover {
-            color: var(--primary);
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--light);
-            font-size: 1.2rem;
-            transition: var(--transition);
-            border: 1px solid var(--primary);
-        }
-        
-        .social-links a:hover {
-            background: var(--primary);
-            transform: translateY(-5px);
-        }
-        
-        .contact-form {
-            flex: 1;
-            animation: fadeInRight 0.8s ease-out;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--light);
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 15px;
-            border-radius: 8px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            color: var(--light);
-            font-family: 'Roboto', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-        }
-        
-        .form-group textarea {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        /* Footer */
-        footer {
-            background: rgba(15, 23, 42, 0.95);
-            padding: 30px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
         .footer-content {
-            display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 20px;
         }
-        
-        .footer-logo {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--light);
-            text-decoration: none;
-            margin-bottom: 20px;
-        }
-        
-        .copyright {
-            color: #94a3b8;
-            font-size: 1rem;
-        }
-        
-        /* Animations */
-        @keyframes fadeInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        
-        /* Botones de descarga */
-        .download-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--primary);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            border: 1px solid var(--primary);
-        }
-        
-        .download-btn:hover {
-            background: transparent;
-            transform: translateY(-2px);
-        }
-        
-        .download-btn.outline {
-            background: transparent;
-        }
-        
-        .download-btn.outline:hover {
-            background: var(--primary);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .hero-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            .hero-text {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-            .about-content {
-                flex-direction: column;
-            }
-            .timeline::before {
-                left: 30px;
-            }
-            .timeline-item {
-                width: 100%;
-                padding-left: 70px;
-                padding-right: 25px;
-                left: 0 !important;
-            }
-            .timeline-item:nth-child(odd) .timeline-content::before,
-            .timeline-item:nth-child(even) .timeline-content::before {
-                left: 20px;
-            }
-            .contact-wrapper {
-                flex-direction: column;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            .hero h1 {
-                font-size: 3rem;
-            }
-            .hero h2 {
-                font-size: 1.5rem;
-            }
-            .section-title h2 {
-                font-size: 2rem;
-            }
-            .btn {
-                display: block;
-                width: 100%;
-                margin-bottom: 15px;
-            }
-            .btn-outline {
-                margin-left: 0;
-            }
-            .download-buttons {
-                flex-direction: column;
-            }
-            .download-btn {
-                justify-content: center;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="container">
-            <nav>
-                <a href="#" class="logo"><i class="fas fa-code"></i> MichaelG</a>
-                <div class="nav-links">
-                    <a href="#about">Sobre Mí</a>
-                    <a href="#experience">Experiencia</a>
-                    <a href="#education">Educación</a>
-                    <a href="#contact">Contacto</a>
-                </div>
-            </nav>
-        </div>
-    </header>
+    }
+</style>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>Michael Garguir</h1>
-                    <h2>Programador Profesional</h2>
-                    <p>Con más de 6 años de experiencia en informática recibidas desde el secundario y pulidas a través de titulaciones posteriores, amplio manejo en Python y HTML, así como prevención de amenazas a través de la Ciberseguridad.</p>
-                    <div>
-                        <a href="#contact" class="btn">Contáctame</a>
-                        <a href="#experience" class="btn btn-outline">Mi Experiencia</a>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <div class="profile-img">
-                        <img src="" alt="Michael Garguir">
-                    </div>
-                </div>
+
+<!-- Kinetic Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-circle" id="cursorCircle"></div>
+
+<!-- WebGL-like Canvas Background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Header -->
+<header>
+    <div class="nav-container">
+        <a href="#" class="logo"><i class="fas fa-terminal" style="color: var(--accent-orange);"></i> Michael<span>.G</span></a>
+        <ul class="nav-links">
+            <li><a href="#about">Sobre Mí</a></li>
+            <li><a href="#experience">Experiencia</a></li>
+            <li><a href="#education">Educación</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-grid">
+        <div class="hero-text">
+            <div class="hero-tag">
+                <i class="fas fa-shield-alt"></i> Portfolio & Ciberseguridad
+            </div>
+            <h1 class="hero-title">Michael <span>Garguir</span></h1>
+            <h2 style="font-family: 'Space Grotesk'; font-size: 1.8rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 20px;">Desarrollador Profesional & Especialista en Ciberseguridad</h2>
+            <p class="hero-desc">Más de 6 años de trayectoria informática puliendo sistemas seguros, código en Python de alto rendimiento y arquitectura web inmersiva de vanguardia.</p>
+            <div class="hero-actions">
+                <a href="#contact" class="btn-primary">Contáctame <i class="fas fa-arrow-right"></i></a>
+                <a href="#experience" class="btn-secondary">Ver Experiencia</a>
             </div>
         </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>Sobre Mí</h2>
-            </div>
-            <div class="about-content">
-                <div class="about-text">
-                    <h3>Programador & Especialista en Ciberseguridad</h3>
-                    <p>Soy un programador apasionado con más de 7 años de experiencia en el campo de la informática. Mi trayectoria comenzó durante mis estudios secundarios y se ha ido perfeccionando a través de formaciones especializadas.</p>
-                    <p>Mi experiencia abarca desde el desarrollo web hasta la implementación de sistemas de seguridad informática. Me especializo en Python y HTML, con conocimientos sólidos en bases de datos SQL y administración de sistemas Linux.</p>
-                    <p>En el ámbito de la ciberseguridad, tengo experiencia en la identificación y prevención de amenazas, implementando buenas prácticas y soluciones técnicas para proteger sistemas y datos.</p>
-                </div>
-                <div class="about-skills">
-                    <div class="skill">
-                        <div class="skill-title">
-                            <h4>Python</h4>
-                            <span>90%</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 90%;"></div>
-                        </div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-title">
-                            <h4>HTML/CSS</h4>
-                            <span>85%</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 85%;"></div>
-                        </div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-title">
-                            <h4>Linux</h4>
-                            <span>80%</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 80%;"></div>
-                        </div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-title">
-                            <h4>SQL</h4>
-                            <span>75%</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 75%;"></div>
-                        </div>
-                    </div>
-                    <div class="skill">
-                        <div class="skill-title">
-                            <h4>Ciberseguridad</h4>
-                            <span>70%</span>
-                        </div>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 70%;"></div>
-                        </div>
-                    </div>
-                </div>
+        <div class="hero-visual">
+            <div class="avatar-container" id="tiltCard">
+                <img src="" alt="Michael Garguir">
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <div class="section-title">
-                <h2>Experiencia Profesional</h2>
+<!-- About Section -->
+<section id="about">
+    <div class="section-header">
+        <span class="section-tag">01 / Perfil Profesional</span>
+        <h2 class="section-title">Sobre Mí</h2>
+    </div>
+    <div class="about-grid">
+        <div class="about-card">
+            <h3 style="font-family: 'Space Grotesk'; font-size: 1.8rem; margin-bottom: 20px; color: var(--text-main);">Ingeniosidad Técnica & Seguridad Defensiva</h3>
+            <p>Soy un programador apasionado con más de 7 años de experiencia ininterrumpida en el sector tecnológico. Mi trayectoria comenzó durante mis estudios secundarios y se ha expandido mediante certificaciones avanzadas.</p>
+            <p>Combino el desarrollo de software limpio (Python, HTML/CSS) con la administración robusta de sistemas Linux y bases de datos SQL. En el ámbito de la ciberseguridad, aplico metodologías ofensivas y defensivas para la mitigación de amenazas.</p>
+        </div>
+        <div class="skills-container">
+            <div class="skill-box">
+                <div class="skill-info"><span>Python & Hacking Ético</span> <span>90%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width: 90%;"></div></div>
             </div>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>SILICON Misiones</h3>
-                        <h4>Programador</h4>
-                        <ul>
-                            <li>Asimilación de términos y conceptos de diversos lenguajes para su posterior uso</li>
-                            <li>Creación de programas basados en los lenguajes mencionados</li>
-                            <li>Prosecución administrativa de tareas</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Escuela de Robótica</h3>
-                        <h4>Especialista en Robótica (2017 a 2019)</h4>
-                        <ul>
-                            <li>Comprensión e Implementación de Servomotores</li>
-                            <li>Manufacturación de Mecanismos</li>
-                            <li>Interpretación y Aplicación de Macroórdenes</li>
-                            <li>Abordaje de técnicas de Electrónica básica</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Prácticas Estudiantiles</h3>
-                        <h4>Desarrollador</h4>
-                        <ul>
-                            <li>Creación de Páginas Web</li>
-                            <li>Manejo del Sistema Operativo LINUX</li>
-                            <li>Confección de Planillas de EXCEL</li>
-                            <li>Producción de Base de Datos (SQL)</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Python Hacking: Ciberseguridad y Hacking Ético con Python</h3>
-                        <h4>Udemy - Santiago Hernández (Agosto 2025)</h4>
-                        <ul>
-                            <li>Certificación en técnicas de hacking ético y ciberseguridad utilizando Python</li>
-                            <li>35 horas de formación especializada</li>
-                            <li>Desarrollo de habilidades en seguridad ofensiva y defensiva</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Certificaciones en Programación y Robótica</h3>
-                        <h4>Escuela de Robótica y Silicon Misiones (2024)</h4>
-                        <ul>
-                            <li>Introducción a la Programación Nivel 1 y 2</li>
-                            <li>Ciberseguridad: Amenaza, Consejos y Buenas Prácticas</li>
-                            <li>Ciclo Completo de Robótica</li>
-                        </ul>
-                    </div>
-                </div>
+            <div class="skill-box">
+                <div class="skill-info"><span>HTML / CSS / Frontend</span> <span>85%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width: 85%;"></div></div>
+            </div>
+            <div class="skill-box">
+                <div class="skill-info"><span>Linux & Sistemas</span> <span>80%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width: 80%;"></div></div>
+            </div>
+            <div class="skill-box">
+                <div class="skill-info"><span>Bases de Datos SQL</span> <span>75%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width: 75%;"></div></div>
+            </div>
+            <div class="skill-box">
+                <div class="skill-info"><span>Ciberseguridad Ofensiva</span> <span>70%</span></div>
+                <div class="skill-track"><div class="skill-fill" style="width: 70%;"></div></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Education Section -->
-    <section id="education" class="education">
-        <div class="container">
-            <div class="section-title">
-                <h2>Educación</h2>
-            </div>
-            <div class="education-grid">
-                <div class="education-card">
-                    <h3>Técnico en Informática</h3>
-                    <h4>Instituto Superior Roque Gonzalez</h4>
-                    <p>2019 - 2023</p>
-                    <p>Egresado con especialización en programación y sistemas informáticos.</p>
-                </div>
-                <div class="education-card">
-                    <h3>Introducción a la Programación</h3>
-                    <h4>Academia del Programador Misionero - Silicon Misiones</h4>
-                    <p>Abril 2024 - 24 horas presenciales</p>
-                    <p>Curso correspondiente al 1° Nivel del Trayecto del Programador Misionero.</p>
-                    <div class="download-buttons">
-                        <a href="Garguir Michael .pdf" class="download-btn" download>
-                            <i class="fas fa-file-pdf"></i> Descargar Certificado
-                        </a>
-                    </div>
-                </div>
-                <div class="education-card">
-                    <h3>Ciberseguridad: Amenaza, Consejos y Buenas Prácticas</h3>
-                    <h4>Silicon Misiones</h4>
-                    <p>4 horas virtuales</p>
-                    <p>Curso sobre ciberseguridad, amenazas y buenas prácticas.</p>
-                    <div class="download-buttons">
-                        <a href="Certificado Garguir Michael.pdf" class="download-btn" download>
-                            <i class="fas fa-file-pdf"></i> Descargar Certificado
-                        </a>
-                    </div>
-                </div>
-                <div class="education-card">
-                    <h3>Python Hacking: Ciberseguridad y Hacking Ético con Python</h3>
-                    <h4>Udemy - Santiago Hernández</h4>
-                    <p>Agosto 2025 - 35 horas</p>
-                    <p>Certificación en técnicas de hacking ético y ciberseguridad utilizando Python.</p>
-                    <div class="download-buttons">
-                        <a href="Certificado Hacking.jpg" class="download-btn" download>
-                            <i class="fas fa-download"></i> Descargar JPG
-                        </a>
-                        <a href="Certificado de hacking.pdf" class="download-btn outline" download>
-                            <i class="fas fa-file-pdf"></i> Descargar PDF
-                        </a>
-                    </div>
-                </div>
-                <div class="education-card">
-                    <h3>Proyecto de Inglés</h3>
-                    <h4>Secundario</h4>
-                    <p>2019 - 2023</p>
-                    <p>Titulado con certificación en inglés técnico para informática.</p>
-                </div>
+<!-- Experience Section -->
+<section id="experience">
+    <div class="section-header">
+        <span class="section-tag">02 / Trayectoria</span>
+        <h2 class="section-title">Experiencia Profesional</h2>
+    </div>
+    <div class="timeline-grid">
+        <div class="experience-card">
+            <div class="exp-company">Silicon Misiones</div>
+            <h3 class="exp-role">Programador</h3>
+            <ul class="exp-list">
+                <li><i class="fas fa-check-circle"></i> Asimilación rápida de conceptos avanzados en múltiples lenguajes.</li>
+                <li><i class="fas fa-check-circle"></i> Creación de programas orientados a automatización y rendimiento.</li>
+                <li><i class="fas fa-check-circle"></i> Prosecución administrativa y gestión de proyectos de desarrollo.</li>
+            </ul>
+        </div>
+        <div class="experience-card">
+            <div class="exp-company">Escuela de Robótica (2017 - 2019)</div>
+            <h3 class="exp-role">Especialista en Robótica</h3>
+            <ul class="exp-list">
+                <li><i class="fas fa-check-circle"></i> Comprensión e implementación avanzada de servomotores.</li>
+                <li><i class="fas fa-check-circle"></i> Manufacturación y ensamblaje de mecanismos automatizados.</li>
+                <li><i class="fas fa-check-circle"></i> Interpretación de macroórdenes y electrónica básica.</li>
+            </ul>
+        </div>
+        <div class="experience-card">
+            <div class="exp-company">Prácticas Estudiantiles</div>
+            <h3 class="exp-role">Desarrollador Full-Stack</h3>
+            <ul class="exp-list">
+                <li><i class="fas fa-check-circle"></i> Creación y despliegue de sitios web interactivos.</li>
+                <li><i class="fas fa-check-circle"></i> Operación avanzada bajo entornos Linux.</li>
+                <li><i class="fas fa-check-circle"></i> Confección de planillas y arquitectura SQL optimizada.</li>
+            </ul>
+        </div>
+        <div class="experience-card">
+            <div class="exp-company">Udemy (Agosto 2025)</div>
+            <h3 class="exp-role">Python Hacking & Ciberseguridad</h3>
+            <ul class="exp-list">
+                <li><i class="fas fa-check-circle"></i> Certificación en técnicas de hacking ético con Python (35 horas).</li>
+                <li><i class="fas fa-check-circle"></i> Desarrollo de herramientas de seguridad ofensiva y auditoría.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Education Section -->
+<section id="education">
+    <div class="section-header">
+        <span class="section-tag">03 / Formación</span>
+        <h2 class="section-title">Educación & Certificados</h2>
+    </div>
+    <div class="edu-grid">
+        <div class="edu-card">
+            <div>
+                <span class="edu-badge">Titulado Oficial</span>
+                <h3 class="edu-title">Técnico en Informática</h3>
+                <p class="edu-institution">Instituto Superior Roque Gonzalez (2019 - 2023)</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Egresado con especialización formal en desarrollo de software y sistemas.</p>
             </div>
         </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-title">
-                <h2>Contacto</h2>
+        <div class="edu-card">
+            <div>
+                <span class="edu-badge">Certificación Presencial</span>
+                <h3 class="edu-title">Introducción a la Programación</h3>
+                <p class="edu-institution">Academia del Programador Misionero - Silicon Misiones</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Abril 2024 — Trayecto de 24 horas presenciales.</p>
             </div>
-            <div class="contact-wrapper">
-                <div class="contact-info">
-                    <div class="contact-card">
-                        <h3>Información de Contacto</h3>
-                        <div class="contact-item">
-                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                            <div class="contact-text">
-                                <h4>Email</h4>
-                                <p><a href="mailto:michaelgarguir@gmail.com">michaelgarguir@gmail.com</a></p>
-                            </div>
+            <div class="edu-actions">
+                <a href="Garguir Michael .pdf" class="btn-download" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
+            </div>
+        </div>
+        <div class="edu-card">
+            <div>
+                <span class="edu-badge">Ciberseguridad</span>
+                <h3 class="edu-title">Amenazas, Consejos y Buenas Prácticas</h3>
+                <p class="edu-institution">Silicon Misiones</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Formación especializada en prevención y blindaje corporativo.</p>
+            </div>
+            <div class="edu-actions">
+                <a href="Certificado Garguir Michael.pdf" class="btn-download" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
+            </div>
+        </div>
+        <div class="edu-card">
+            <div>
+                <span class="edu-badge">Especialización Avanzada</span>
+                <h3 class="edu-title">Python Hacking & Hacking Ético</h3>
+                <p class="edu-institution">Udemy — Santiago Hernández</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Agosto 2025 — 35 horas intensivas.</p>
+            </div>
+            <div class="edu-actions">
+                <a href="Certificado Hacking.jpg" class="btn-download" download><i class="fas fa-image"></i> JPG</a>
+                <a href="Certificado de hacking.pdf" class="btn-download" download><i class="fas fa-file-pdf"></i> PDF</a>
+            </div>
+        </div>
+        <div class="edu-card">
+            <div>
+                <span class="edu-badge">Idiomas</span>
+                <h3 class="edu-title">Inglés Técnico para Informática</h3>
+                <p class="edu-institution">Secundario (2019 - 2023)</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Comprensión avanzada de documentación técnica y código en inglés.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+    <div class="section-header">
+        <span class="section-tag">04 / Conexión</span>
+        <h2 class="section-title">Hablemos</h2>
+    </div>
+    <div class="contact-grid">
+        <div class="contact-info-card">
+            <div>
+                <h3 style="font-family: 'Space Grotesk'; font-size: 1.8rem; margin-bottom: 15px;">Información de Contacto</h3>
+                <p style="color: var(--text-muted); font-size: 1.05rem;">¿Tienes un proyecto, propuesta o consulta sobre ciberseguridad? Escríbeme y responderé a la brevedad.</p>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="contact-text">
+                            <span>Email Directo</span>
+                            <a href="mailto:michaelgarguir@gmail.com">michaelgarguir@gmail.com</a>
                         </div>
-                        <div class="contact-item">
-                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                            <div class="contact-text">
-                                <h4>Ubicación</h4>
-                                <p>Garupá, Misiones, Argentina</p>
-                            </div>
-                        </div>
-                        <div class="social-links">
-                            <a href="https://github.com" target="_blank"><i class="fab fa-github"></i></a>
-                            <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="contact-text">
+                            <span>Ubicación</span>
+                            <p>Garupá, Misiones, Argentina</p>
                         </div>
                     </div>
                 </div>
-                <div class="contact-form">
-                    <div class="contact-card">
-                        <h3>Envíame un mensaje</h3>
-                        <form action="#" method="POST">
-                            <div class="form-group">
-                                <label for="name">Nombre</label>
-                                <input type="text" id="name" required placeholder="Tu nombre">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" required placeholder="tu@email.com">
-                            </div>
-                            <div class="form-group">
-                                <label for="message">Mensaje</label>
-                                <textarea id="message" required placeholder="Escribe tu mensaje aquí..."></textarea>
-                            </div>
-                            <button type="submit" class="btn" style="width: 100%;">Enviar Mensaje</button>
-                        </form>
-                    </div>
+            </div>
+            <div class="social-links">
+                <a href="https://github.com/Masauro89" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="contact-form-card">
+            <form action="mailto:michaelgarguir@gmail.com" method="POST" enctype="text/plain">
+                <div class="form-group">
+                    <label for="name">Tu Nombre</label>
+                    <input type="text" id="name" class="form-input" required placeholder="Ej. Juan Pérez">
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="email">Tu Correo Electrónico</label>
+                    <input type="email" id="email" class="form-input" required placeholder="tu@correo.com">
+                </div>
+                <div class="form-group">
+                    <label for="message">Mensaje</label>
+                    <textarea id="message" class="form-input" required placeholder="Escribe tu mensaje o propuesta..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; border: none; cursor: pointer;">Enviar Mensaje <i class="fas fa-paper-plane"></i></button>
+            </form>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <a href="#" class="footer-logo"><i class="fas fa-code"></i> MichaelG</a>
-                <p class="copyright">&copy; 2026 Michael Garguir. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <a href="#" class="logo"><i class="fas fa-terminal" style="color: var(--accent-orange);"></i> Michael<span>.G</span></a>
+        <p class="copyright">&copy; 2026 Michael Garguir. Todos los derechos reservados.</p>
+    </div>
+</footer>
 
-    <!-- Script de Animaciones, Inclinación 3D y Motion Blur por Velocidad -->
-    <script>
-        let lastX = 0, lastY = 0;
-        let currentBlur = 0;
-        
-        window.addEventListener('mousemove', (e) => {
-            const speedX = e.clientX - lastX;
-            const speedY = e.clientY - lastY;
-            lastX = e.clientX;
-            lastY = e.clientY;
+<!-- Advanced Monopo-Style Kinetic & WebGL Script -->
+<script>
+    // Custom Kinetic Cursor Physics
+    const dot = document.getElementById('cursorDot');
+    const circle = document.getElementById('cursorCircle');
+    
+    let mouseX = 0, mouseY = 0;
+    let circleX = 0, circleY = 0;
 
-            const totalSpeed = Math.hypot(speedX, speedY);
-            currentBlur = Math.min(totalSpeed * 0.12, 5); // Motion blur dinámico limitado a 5px
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+    });
 
-            const cards = document.querySelectorAll('.timeline-content, .education-card, .contact-card');
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const cardX = e.clientX - (rect.left + rect.width / 2);
-                const cardY = e.clientY - (rect.top + rect.height / 2);
+    function animateCursor() {
+        circleX += (mouseX - circleX) * 0.15;
+        circleY += (mouseY - circleY) * 0.15;
+        circle.style.transform = `translate3d(${circleX - 18}px, ${circleY - 18}px, 0)`;
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
 
-                if (Math.abs(cardX) < rect.width * 0.75 && Math.abs(cardY) < rect.height * 0.75) {
-                    const rotateX = (cardY / (rect.height / 2)) * -6;
-                    const rotateY = (cardX / (rect.width / 2)) * 6;
-                    
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(12px)`;
-                    card.style.filter = `blur(${currentBlur}px)`;
-                } else {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-                    card.style.filter = `blur(0px)`;
-                }
-            });
+    // Background WebGL-like Particles Canvas
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    const particles = Array.from({ length: 45 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        color: Math.random() > 0.5 ? '#FF5500' : '#38bdf8'
+    }));
+
+    function drawCanvas() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = 0.35;
+            ctx.fill();
         });
+        requestAnimationFrame(drawCanvas);
+    }
+    drawCanvas();
 
-        // Amortiguación gradual (inercia) al detener el cursor
-        setInterval(() => {
-            currentBlur *= 0.8;
-            if (currentBlur < 0.1) {
-                document.querySelectorAll('.timeline-content, .education-card, .contact-card').forEach(card => {
-                    if (!card.matches(':hover')) card.style.filter = 'blur(0px)';
-                });
+    // 3D Tilt Cards & Motion Blur Physics
+    let lastX = 0, lastY = 0;
+    let currentBlur = 0;
+
+    window.addEventListener('mousemove', (e) => {
+        const speedX = e.clientX - lastX;
+        const speedY = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+
+        const totalSpeed = Math.hypot(speedX, speedY);
+        currentBlur = Math.min(totalSpeed * 0.1, 4);
+
+        const tiltCards = document.querySelectorAll('.experience-card, .edu-card, .avatar-container, .about-card, .contact-info-card, .contact-form-card');
+        
+        tiltCards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const cardX = e.clientX - (rect.left + rect.width / 2);
+            const cardY = e.clientY - (rect.top + rect.height / 2);
+
+            if (Math.abs(cardX) < rect.width && Math.abs(cardY) < rect.height) {
+                const rotateX = (cardY / (rect.height / 2)) * -5;
+                const rotateY = (cardX / (rect.width / 2)) * 5;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                card.style.filter = `blur(${currentBlur}px)`;
+            } else {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+                card.style.filter = `blur(0px)`;
             }
-        }, 50);
-    </script>
-</body>
-</html>
+        });
+    });
+
+    // Decay blur inertia
+    setInterval(() => {
+        currentBlur *= 0.75;
+        if (currentBlur < 0.1) {
+            document.querySelectorAll('.experience-card, .edu-card, .avatar-container, .about-card').forEach(card => {
+                if (!card.matches(':hover')) card.style.filter = 'blur(0px)';
+            });
+        }
+    }, 50);
+</script>
