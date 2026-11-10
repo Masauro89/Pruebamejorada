@@ -8,13 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-deep: #050505;
-            --surface: #0a0a0c;
+            --bg-deep: #030305;
+            --surface: #0a0a0f;
             --text-main: #f4f4f6;
             --text-muted: #8b8b9e;
             --neon-orange: #ff3314;
             --neon-blue: #00f0ff;
-            --border-subtle: rgba(255, 255, 255, 0.1);
+            --border-subtle: rgba(255, 255, 255, 0.08);
         }
 
         * {
@@ -29,6 +29,23 @@
             color: var(--text-main);
             overflow-x: hidden;
             line-height: 1.5;
+            cursor: default;
+        }
+
+        /* Canvas de fondo interactivo estilo Monopo */
+        #monopo-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header, section, footer {
+            position: relative;
+            z-index: 2;
         }
 
         /* Cursor cinético */
@@ -38,15 +55,15 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
-            transition: transform 0.1s ease;
+            transition: transform 0.08s ease-out;
         }
         .cursor-dot { width: 8px; height: 8px; background: var(--neon-orange); }
-        .cursor-circle { width: 36px; height: 36px; border: 1px solid rgba(255, 51, 20, 0.4); }
+        .cursor-circle { width: 40px; height: 40px; border: 1px solid rgba(255, 51, 20, 0.4); }
 
         header {
             position: fixed;
             top: 0; width: 100%;
-            background: rgba(5, 5, 5, 0.85);
+            background: rgba(3, 3, 5, 0.8);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-subtle);
             z-index: 1000;
@@ -84,26 +101,26 @@
 
         .container { max-width: 1600px; margin: 0 auto; padding: 0 60px; }
 
-        /* Hero estilo Monopo */
+        /* Hero sección Monopo Exacta */
         .monopo-hero {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            padding-top: 100px;
+            padding-top: 120px;
         }
 
         .hero-layout {
             display: grid;
-            grid-template-columns: 1.4fr 0.6fr;
+            grid-template-columns: 1.3fr 0.7fr;
             gap: 60px;
             align-items: center;
             width: 100%;
         }
 
         .hero-main-title {
-            font-size: clamp(3.5rem, 7vw, 7.5rem);
+            font-size: clamp(3.5rem, 7.5vw, 8rem);
             font-weight: 800;
-            line-height: 0.95;
+            line-height: 0.92;
             letter-spacing: -3px;
             text-transform: uppercase;
             margin-bottom: 30px;
@@ -121,9 +138,8 @@
         .hero-subtitle {
             font-size: 1.25rem;
             color: var(--text-muted);
-            max-width: 600px;
+            max-width: 580px;
             margin-bottom: 45px;
-            font-weight: 400;
         }
 
         .hero-cta-group { display: flex; gap: 20px; }
@@ -166,37 +182,34 @@
 
         .btn-monopo-outline:hover { border-color: var(--neon-orange); color: var(--neon-orange); }
 
-        /* Tarjeta Avatar Interactiva 3D */
-        .hero-showcase {
-            display: flex;
-            justify-content: center;
-        }
+        /* Tarjeta Showcase con Inclinación 3D y Desenfoque Cinemático */
+        .hero-showcase { display: flex; justify-content: center; }
 
         .showcase-card {
             width: 380px;
-            height: 440px;
+            height: 450px;
             background: var(--surface);
             border: 1px solid var(--border-subtle);
             border-radius: 32px;
             overflow: hidden;
             position: relative;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
             transform-style: preserve-3d;
             will-change: transform, filter;
-            transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1);
         }
 
         .showcase-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: grayscale(15%) contrast(110%);
+            filter: grayscale(20%) contrast(110%);
         }
 
         .showcase-badge {
             position: absolute;
             bottom: 25px; left: 25px;
-            background: rgba(3, 7, 18, 0.85);
+            background: rgba(3, 3, 5, 0.85);
             backdrop-filter: blur(15px);
             border: 1px solid var(--border-subtle);
             padding: 12px 24px;
@@ -209,7 +222,7 @@
         }
 
         /* Secciones */
-        section { padding: 120px 0; }
+        section { padding: 130px 0; }
         .section-tag-monopo {
             font-size: 0.9rem;
             text-transform: uppercase;
@@ -226,16 +239,11 @@
             text-transform: uppercase;
             letter-spacing: -2px;
             line-height: 1.05;
-            margin-bottom: 90px;
+            margin-bottom: 80px;
         }
 
-        /* About & Skills Grid */
-        .about-monopo-grid {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 70px;
-            align-items: center;
-        }
+        /* Grids y Contenedores */
+        .about-monopo-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 70px; align-items: center; }
 
         .about-text-card {
             background: var(--surface);
@@ -243,60 +251,30 @@
             padding: 60px;
             border-radius: 32px;
             backdrop-filter: blur(25px);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        .about-text-card p {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            margin-bottom: 25px;
-        }
+        .about-text-card p { color: var(--text-muted); font-size: 1.2rem; margin-bottom: 25px; }
 
-        .skills-monopo-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
+        .skills-monopo-stack { display: flex; flex-direction: column; gap: 20px; }
 
         .skill-item-monopo {
             background: var(--surface);
             border: 1px solid var(--border-subtle);
-            padding: 28px 35px;
+            padding: 26px 32px;
             border-radius: 20px;
             backdrop-filter: blur(20px);
             transition: border-color 0.3s ease, transform 0.3s ease;
         }
 
-        .skill-item-monopo:hover {
-            border-color: var(--neon-orange);
-            transform: translateX(8px);
-        }
+        .skill-item-monopo:hover { border-color: var(--neon-orange); transform: translateX(8px); }
 
-        .skill-meta {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .skill-meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .skill-bar-bg {
-            height: 6px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 3px;
-            overflow: hidden;
-        }
+        .skill-bar-bg { height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+        .skill-bar-progress { height: 100%; background: linear-gradient(90deg, var(--neon-orange), #ff8833); border-radius: 3px; }
 
-        .skill-bar-progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neon-orange), #ff8833);
-            border-radius: 3px;
-            transition: width 1.4s cubic-bezier(0.2, 0, 0.2, 1);
-        }
-
-        /* Experience & Education Grids */
+        /* Experiencia y Educación Grids */
         .experience-monopo-grid, .education-monopo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
@@ -310,47 +288,29 @@
             padding: 45px;
             backdrop-filter: blur(25px);
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.3s ease, filter 0.2s ease;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .experience-item-card:hover, .education-item-card:hover {
             transform: translateY(-8px);
             border-color: rgba(255, 51, 20, 0.6);
-            box-shadow: 0 30px 60px rgba(255, 51, 20, 0.1);
+            box-shadow: 0 30px 60px rgba(255, 51, 20, 0.15);
         }
 
-        .exp-tagline {
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--neon-orange);
-            margin-bottom: 15px;
-        }
-
-        .exp-heading, .edu-main-title {
-            font-size: 1.7rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -0.5px;
-        }
+        .exp-tagline { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--neon-orange); margin-bottom: 15px; }
+        .exp-heading, .edu-main-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.5px; }
 
         .exp-details-list li, .education-card-desc {
             color: var(--text-muted);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 1.05rem;
             list-style: none;
             position: relative;
             padding-left: 18px;
         }
 
-        .exp-details-list li::before {
-            content: "—";
-            position: absolute;
-            left: 0;
-            color: var(--neon-orange);
-        }
+        .exp-details-list li::before { content: "—"; position: absolute; left: 0; color: var(--neon-orange); }
 
         .edu-status-tag {
             font-size: 0.8rem;
@@ -365,9 +325,8 @@
             margin-bottom: 20px;
         }
 
-        /* Botones de certificado */
         .btn-download-cert {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-subtle);
             color: var(--text-main);
             padding: 12px 22px;
@@ -385,18 +344,10 @@
             margin-right: 10px;
         }
 
-        .btn-download-cert:hover {
-            background: var(--neon-orange);
-            border-color: var(--neon-orange);
-            color: #fff;
-        }
+        .btn-download-cert:hover { background: var(--neon-orange); border-color: var(--neon-orange); color: #fff; }
 
-        /* Contacto estilo Monopo */
-        .contact-monopo-grid {
-            display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 60px;
-        }
+        /* Contacto Estilo Agencia */
+        .contact-monopo-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 60px; }
 
         .contact-card-box {
             background: var(--surface);
@@ -407,22 +358,18 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
         .contact-methods { display: flex; flex-direction: column; gap: 30px; margin: 35px 0; }
-
         .contact-item-box { display: flex; align-items: center; gap: 22px; }
 
         .contact-icon-box {
             width: 60px; height: 60px;
             background: rgba(255, 51, 20, 0.1);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--neon-orange);
-            font-size: 1.4rem;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--neon-orange); font-size: 1.4rem;
             border: 1px solid rgba(255, 51, 20, 0.2);
         }
 
@@ -433,25 +380,16 @@
         .form-group-monopo { margin-bottom: 25px; }
         .form-group-monopo label { display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; font-weight: 700; }
         .form-group-monopo input, .form-group-monopo textarea {
-            width: 100%;
-            padding: 18px 24px;
+            width: 100%; padding: 18px 24px;
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            color: var(--text-main);
-            font-size: 1rem;
-            outline: none;
+            border-radius: 16px; color: var(--text-main); font-size: 1rem; outline: none;
             transition: border-color 0.3s;
         }
         .form-group-monopo input:focus, .form-group-monopo textarea:focus { border-color: var(--neon-orange); }
         .form-group-monopo textarea { min-height: 140px; resize: vertical; }
 
-        footer {
-            border-top: 1px solid var(--border-subtle);
-            padding: 50px 0;
-            text-align: center;
-            color: var(--text-muted);
-        }
+        footer { border-top: 1px solid var(--border-subtle); padding: 50px 0; text-align: center; color: var(--text-muted); }
 
         @media (max-width: 1024px) {
             .hero-layout, .about-monopo-grid, .contact-monopo-grid { grid-template-columns: 1fr; }
@@ -461,7 +399,10 @@
 </head>
 <body>
 
-    <!-- Cursor cinético -->
+    <!-- Canvas para el fondo interactivo con movimiento de mouse (Estilo Monopo) -->
+    <canvas id="monopo-canvas"></canvas>
+
+    <!-- Cursor Cinético -->
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-circle" id="cursorCircle"></div>
 
@@ -485,7 +426,7 @@
                 <div class="hero-text-content">
                     <span class="section-tag-monopo">Portafolio Profesional 2026</span>
                     <h1 class="hero-main-title">Michael <span class="highlight">Garguir</span></h1>
-                    <p class="hero-subtitle">Programador Profesional y Especialista en Ciberseguridad. Creando experiencias digitales robustas, seguras y de alto rendimiento técnico.</p>
+                    <p class="hero-subtitle">Programador Profesional y Especialista en Ciberseguridad. Creando arquitecturas digitales seguras, sistemas robustos y experiencias de alto nivel técnico.</p>
                     <div class="hero-cta-group">
                         <a href="#contact" class="btn-monopo">Iniciar Proyecto <i class="fas fa-arrow-right"></i></a>
                         <a href="#experience" class="btn-monopo-outline">Ver Experiencia</a>
@@ -508,8 +449,8 @@
             <h2 class="section-title-monopo">Sobre Mí</h2>
             <div class="about-monopo-grid">
                 <div class="about-text-card">
-                    <p>Soy un programador apasionado con más de 7 años de experiencia inmerso en el mundo tecnológico. Mi camino comenzó en la educación secundaria técnica y se ha consolidado mediante especializaciones avanzadas.</p>
-                    <p>Combino el desarrollo de software en Python y HTML con sólidos conocimientos en bases de datos SQL, administración de sistemas Linux y ciberseguridad defensiva y ofensiva.</p>
+                    <p>Soy un programador enfocado en el desarrollo de software y la seguridad informática, respaldado por una sólida formación técnica y experiencia práctica en múltiples ecosistemas tecnológicos.</p>
+                    <p>Domino la automatización y creación de lógica en Python, maquetación avanzada en HTML/CSS, administración de servidores Linux y bases de datos SQL relacionales.</p>
                 </div>
                 <div class="skills-monopo-stack">
                     <div class="skill-item-monopo">
@@ -547,27 +488,27 @@
                     <div class="exp-tagline">Silicon Misiones</div>
                     <h3 class="exp-heading">Programador</h3>
                     <ul class="exp-details-list">
-                        <li>Asimilación rápida de términos y conceptos avanzados para su aplicación práctica.</li>
-                        <li>Creación de programas funcionales basados en múltiples lenguajes.</li>
-                        <li>Prosecución y optimización de tareas administrativas técnicas.</li>
+                        <li>Asimilación rápida de términos y conceptos avanzados aplicados al desarrollo.</li>
+                        <li>Desarrollo de scripts y programas funcionales optimizados.</li>
+                        <li>Gestión y resolución de requerimientos técnicos administrativos.</li>
                     </ul>
                 </div>
                 <div class="experience-item-card">
                     <div class="exp-tagline">Escuela de Robótica (2017 - 2019)</div>
                     <h3 class="exp-heading">Especialista en Robótica</h3>
                     <ul class="exp-details-list">
-                        <li>Implementación y control avanzado de servomotores.</li>
-                        <li>Manufacturación y ensamblaje de mecanismos automatizados.</li>
-                        <li>Aplicación de macroórdenes y electrónica básica.</li>
+                        <li>Configuración y control avanzado de servomotores y componentes lógicos.</li>
+                        <li>Ensamble y estructuración de mecanismos automatizados.</li>
+                        <li>Aplicación de electrónica básica y lógica de control.</li>
                     </ul>
                 </div>
                 <div class="experience-item-card">
                     <div class="exp-tagline">Prácticas Estudiantiles</div>
                     <h3 class="exp-heading">Desarrollador Full-Stack Junior</h3>
                     <ul class="exp-details-list">
-                        <li>Maquetación y creación de páginas web institucionales.</li>
-                        <li>Gestión integral de entornos y servidores Linux.</li>
-                        <li>Diseño de bases de datos relacionales SQL y hojas de cálculo avanzadas.</li>
+                        <li>Diseño y maquetación de interfaces web institucionales.</li>
+                        <li>Administración y despliegue en entornos Linux.</li>
+                        <li>Estructuración de bases de datos relacionales SQL.</li>
                     </ul>
                 </div>
             </div>
@@ -584,13 +525,13 @@
                     <span class="edu-status-tag">2019 - 2023</span>
                     <h3 class="edu-main-title">Técnico en Informática</h3>
                     <p style="color:var(--neon-orange); font-weight:700; margin-bottom:10px;">Instituto Superior Roque González</p>
-                    <p class="education-card-desc">Egresado con especialización formal en desarrollo de software y arquitectura de sistemas.</p>
+                    <p class="education-card-desc">Formación académica formal con especialización técnica en informática y desarrollo.</p>
                 </div>
                 <div class="education-item-card">
                     <span class="edu-status-tag">Agosto 2025</span>
                     <h3 class="edu-main-title">Python Hacking & Hacking Ético</h3>
                     <p style="color:var(--neon-orange); font-weight:700; margin-bottom:10px;">Udemy - Santiago Hernández (35 Horas)</p>
-                    <p class="education-card-desc">Certificación avanzada en ciberseguridad ofensiva y desarrollo de herramientas de seguridad en Python.</p>
+                    <p class="education-card-desc">Especialización intensiva en seguridad ofensiva y desarrollo de herramientas en Python.</p>
                     <div>
                         <a href="Certificado Hacking.jpg" class="btn-download-cert" download><i class="fas fa-download"></i> JPG</a>
                         <a href="Certificado de hacking.pdf" class="btn-download-cert" download><i class="fas fa-file-pdf"></i> PDF</a>
@@ -600,7 +541,7 @@
                     <span class="edu-status-tag">2024</span>
                     <h3 class="edu-main-title">Introducción a la Programación</h3>
                     <p style="color:var(--neon-orange); font-weight:700; margin-bottom:10px;">Silicon Misiones (24 hrs presenciales)</p>
-                    <p class="education-card-desc">Trayecto formativo del Programador Misionero.</p>
+                    <p class="education-card-desc">Trayecto formativo orientado al desarrollo del talento tecnológico regional.</p>
                     <div>
                         <a href="Garguir Michael .pdf" class="btn-download-cert" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
                     </div>
@@ -609,7 +550,7 @@
                     <span class="edu-status-tag">Virtual</span>
                     <h3 class="edu-main-title">Ciberseguridad: Amenazas y Buenas Prácticas</h3>
                     <p style="color:var(--neon-orange); font-weight:700; margin-bottom:10px;">Silicon Misiones (4 hrs)</p>
-                    <p class="education-card-desc">Prevención de vectores de ataque y concientización en seguridad informática.</p>
+                    <p class="education-card-desc">Capacitación defensiva en concientización y mitigación de riesgos informáticos.</p>
                     <div>
                         <a href="Certificado Garguir Michael.pdf" class="btn-download-cert" download><i class="fas fa-file-pdf"></i> Certificado PDF</a>
                     </div>
@@ -627,7 +568,7 @@
                 <div class="contact-card-box">
                     <div>
                         <h3 style="font-size: 1.8rem; margin-bottom: 15px;">Iniciemos algo increíble.</h3>
-                        <p style="color: var(--text-muted);">¿Tienes un proyecto en mente o requieres consultoría en desarrollo y seguridad? Escríbeme directamente.</p>
+                        <p style="color: var(--text-muted);">¿Tienes un proyecto en mente o requieres consultoría en software y ciberseguridad? Escríbeme directamente.</p>
                     </div>
                     <div class="contact-methods">
                         <div class="contact-item-box">
@@ -675,13 +616,13 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 Michael Garguir. Diseñado con inspiración Monopo London.</p>
+            <p>&copy; 2026 Michael Garguir. Interacción fluida inspirada en Monopo London.</p>
         </div>
     </footer>
 
-    <!-- Script Interactivo de Cursor, Inclinación 3D y Motion Blur -->
+    <!-- Script de Fondo Fluido Interactivo y Cursor -->
     <script>
-        // Cursor cinético
+        // Cursor Cinético Suave
         const dot = document.getElementById('cursorDot');
         const circle = document.getElementById('cursorCircle');
         let mouseX = 0, mouseY = 0;
@@ -696,53 +637,114 @@
         function animateCursor() {
             circleX += (mouseX - circleX) * 0.15;
             circleY += (mouseY - circleY) * 0.15;
-            circle.style.transform = `translate3d(${circleX - 18}px, ${circleY - 18}px, 0)`;
+            circle.style.transform = `translate3d(${circleX - 20}px, ${circleY - 20}px, 0)`;
             requestAnimationFrame(animateCursor);
         }
         animateCursor();
 
-        // Efecto Tilt 3D y Motion Blur en tarjetas y avatar
-        let lastX = 0, lastY = 0;
-        let currentBlur = 0;
+        // Motor de Fondo Interactivo de Partículas Fluctuantes (Estilo Monopo)
+        const canvas = document.getElementById('monopo-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
 
-        window.addEventListener('mousemove', (e) => {
-            const speedX = e.clientX - lastX;
-            const speedY = e.clientY - lastY;
-            lastX = e.clientX;
-            lastY = e.clientY;
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-            const totalSpeed = Math.hypot(speedX, speedY);
-            currentBlur = Math.min(totalSpeed * 0.12, 6);
-
-            const cards = document.querySelectorAll('.showcase-card, .experience-item-card, .education-item-card, .about-text-card, .contact-card-box');
-            
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const cardX = e.clientX - (rect.left + rect.width / 2);
-                const cardY = e.clientY - (rect.top + rect.height / 2);
-
-                if (Math.abs(cardX) < rect.width * 0.8 && Math.abs(cardY) < rect.height * 0.8) {
-                    const rotateX = (cardY / (rect.height / 2)) * -7;
-                    const rotateY = (cardX / (rect.width / 2)) * 7;
-                    
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(12px)`;
-                    card.style.filter = `blur(${currentBlur}px)`;
-                } else {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
-                    card.style.filter = `blur(0px)`;
-                }
-            });
-        });
-
-        // Amortiguación de inercia
-        setInterval(() => {
-            currentBlur *= 0.8;
-            if (currentBlur < 0.1) {
-                document.querySelectorAll('.showcase-card, .experience-item-card, .education-item-card, .about-text-card, .contact-card-box').forEach(card => {
-                    if (!card.matches(':hover')) card.style.filter = 'blur(0px)';
-                });
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
+                this.size = Math.random() * 2.5 + 1;
             }
-        }, 50);
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+
+                // Reacción fluida al acercar el mouse (efecto de repulsión/atracción elegante)
+                let dx = mouseX - this.x;
+                let dy = mouseY - this.y;
+                let dist = Math.hypot(dx, dy);
+                if (dist < 180) {
+                    let force = (180 - dist) / 180;
+                    this.x -= (dx / dist) * force * 3;
+                    this.y -= (dy / dist) * force * 3;
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(255, 51, 20, 0.25)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 75; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateBackground() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Dibujar líneas de conexión dinámicas entre partículas cercanas
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.hypot(dx, dy);
+
+                    if (dist < 130) {
+                        ctx.strokeStyle = `rgba(255, 51, 20, ${0.12 * (1 - dist / 130)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+
+                // Línea sutil hacia el cursor del usuario
+                let mouseDist = Math.hypot(mouseX - particles[i].x, mouseY - particles[i].y);
+                if (mouseDist < 160) {
+                    ctx.strokeStyle = `rgba(0, 240, 255, ${0.2 * (1 - mouseDist / 160)})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(mouseX, mouseY);
+                    ctx.stroke();
+                }
+            }
+            requestAnimationFrame(animateBackground);
+        }
+        animateBackground();
+
+        // Efecto Tilt 3D en Tarjetas
+        window.addEventListener('mousemove', (e) => {
+            const card = document.getElementById('tiltCard');
+            const rect = card.getBoundingClientRect();
+            const cardX = e.clientX - (rect.left + rect.width / 2);
+            const cardY = e.clientY - (rect.top + rect.height / 2);
+
+            if (Math.abs(cardX) < rect.width && Math.abs(cardY) < rect.height) {
+                const rotateX = (cardY / (rect.height / 2)) * -8;
+                const rotateY = (cardX / (rect.width / 2)) * 8;
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(15px)`;
+            } else {
+                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+            }
+        });
     </script>
 </body>
 </html>
